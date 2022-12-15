@@ -1,7 +1,6 @@
 import React from "react";
-import {Alert, IconButton, Typography} from "@mui/joy";
+import {Alert, Typography} from "@mui/joy";
 import WarningIcon from '@mui/icons-material/Warning';
-import CloseIcon from '@mui/icons-material/Close';
 import InfoIcon from '@mui/icons-material/Info';
 import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
 import Prop_NotificationLine from "../../../definitions/props/Notification/Prop_NotificationLine";

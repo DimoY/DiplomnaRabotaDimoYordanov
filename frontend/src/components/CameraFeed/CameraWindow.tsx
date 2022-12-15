@@ -1,7 +1,6 @@
 import React from "react";
 import Card from '@mui/joy/Card';
 import CardCover from '@mui/joy/CardCover';
-import Box from "@mui/joy/Box";
 
 class CameraWindow extends React.Component{
     constructor(props: Readonly<{}>) {

@@ -7,6 +7,7 @@ import Switch from '@mui/joy/Switch';
 import Prop_NotificationGroup from "../../../definitions/props/Notification/Prop_NotificationGroup";
 import NotificationLine from "../NotificationLine/NotificationLine";
 import React from "react";
+
 class NotificationGroup extends React.Component{
     constructor(props:Prop_NotificationGroup){
         super(props);

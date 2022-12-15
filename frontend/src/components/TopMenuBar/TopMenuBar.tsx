@@ -2,26 +2,19 @@ import Box from '@mui/joy/Box';
 import Chip from '@mui/joy/Chip';
 import Tabs from '@mui/joy/Tabs';
 import TabList from '@mui/joy/TabList';
-import Tab, { tabClasses } from '@mui/joy/Tab';
+import Tab, {tabClasses} from '@mui/joy/Tab';
 import TabPanel from '@mui/joy/TabPanel';
-import Typography from '@mui/joy/Typography';
-import Input from '@mui/joy/Input';
-import SearchRounded from '@mui/icons-material/SearchRounded';
 import React from "react";
-import LoginForm from "../UserLogin_Register/LoginForm/LoginForm";
-import CameraWindow from "../CameraFeed/CameraWindow";
-import NotificationGroup from "../Notification/NotificationGroup/NotificationGroup";
-import Prop_NotificationGroup from "../../definitions/props/Notification/Prop_NotificationGroup";
-import Importance from "../../definitions/Enums/Importance/Importance";
+import Prop_TopMenuBar from "../../definitions/props/TopMenuBar/Prop_TopMenuBar";
 
 class TopMenuBar extends React.Component{
-    constructor(props:{}){
+    constructor(props:Prop_TopMenuBar){
         super(props);
-        let mapper  = new Map([
-            ["10-16-2012",[{message:"obame",importanceLevel:Importance.Informative}]]
-        ]);
+
         this.state = {
-            data:mapper
+            loginWidget:props.loginWidget,
+            cameraWidget:props.cameraWidget,
+            notificationWidget:props.notificationWidget
         }
     }
     render(){
@@ -111,13 +104,13 @@ class TopMenuBar extends React.Component{
                             })}
                         >
                             <TabPanel value={0}>
-                                <LoginForm/>
+                                {this.state.loginWidget}
                             </TabPanel>
                             <TabPanel value={1}>
-                                <NotificationGroup data = {this.state.data}/>
+                                {this.state.notificationWidget}
                             </TabPanel>
                             <TabPanel value={2}>
-                                <CameraWindow/>
+                                {this.state.cameraWidget}
                             </TabPanel>
                         </Box>
                     </Tabs>

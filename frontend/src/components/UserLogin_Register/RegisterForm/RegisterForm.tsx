@@ -4,6 +4,7 @@ import UsernameField from "../Fields/UsernameField";
 import SubmitButton from "../Fields/SubmitButton";
 import {Typography} from "@mui/joy";
 import EmailField from "../Fields/EmailField";
+
 class RegisterForm extends React.Component{
     constructor(props:{}) {
         super(props);
