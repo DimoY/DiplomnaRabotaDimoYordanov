@@ -23,20 +23,8 @@ function AppUseDefines(app) {
     app.use(bodyParser.urlencoded({ extended: true }));
  
     app.use(bodyParser.json());
+
     
-    app.oauth = oauthserver({
-    model: require("../model/model"), // See below for specification
-    grants: ['password'],
-    debug: true
-    });
-    
-    app.all('/oauth/token', app.oauth.grant());
-    
-    app.get('/', app.oauth.authorise(), function (req, res) {
-    res.send('Secret area');
-    });
-    
-    app.use(app.oauth.errorHandler());
     app.use('/', indexRouter);
     app.use('/users', usersRouter);
     app.use("/api",APIRouter);

@@ -1,7 +1,6 @@
-
 var mongoose = require('mongoose'),
-modelName = 'client',
-schemaDefinition = require('../schema/' + modelName),
+modelName = 'face',
+schemaDefinition = require('../../schema/Face/' + modelName),
 schemaInstance = mongoose.Schema(schemaDefinition),
 modelInstance = mongoose.model(modelName, schemaInstance);
 

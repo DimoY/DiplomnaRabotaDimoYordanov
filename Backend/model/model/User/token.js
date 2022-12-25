@@ -1,6 +1,6 @@
 var mongoose = require('mongoose'),
 	modelName = 'token',
-	schemaDefinition = require('../schema/' + modelName),
+	schemaDefinition = require('../../schema/User/' + modelName),
 	schemaInstance = mongoose.Schema(schemaDefinition);
 
 schemaInstance.index({ "refreshTokenExpiresAt": 1 }, { expireAfterSeconds: 0 });

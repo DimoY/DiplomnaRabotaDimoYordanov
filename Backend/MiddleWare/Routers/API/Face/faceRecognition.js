@@ -3,7 +3,8 @@ var router = express.Router();
 var sharp = require("sharp");
 const axios = require('axios');
 const dbo = require("../../../../db/conn")
-
+const AuthMiddleWare = require("../../../Others/userIsAuthenticated")
+const FaceModel = require("../../../../model/model/Face/face")
 path = "/run/media/dimoy/d910ca3f-8188-4f99-b7f3-9d2d45aaa2f6/home/dn/Documents/DiplomnaFolder/Backend/detcted2q.jpg"
 async function PredictBasedOnPath(path) {
     let data = await sharp(path)
@@ -34,29 +35,18 @@ async function PredictBasedOnPath(path) {
 
 
 
-router.post('/', function (req, res, next) {
-    PredictBasedOnPath(path).then(
-        (data)=>{
-            
-            const faceInfo = {
-                listing_id: req.body.id,
-                last_modified: new Date(),
-                session_id: 12,
-                direction: data[0]
-              };
-            var db = dbo.getDb();
-            db.collection("faces")
-            .insertOne(faceInfo, function (err, result) {
-            if (err) {
-                res.status(400).send("Error inserting face!");
-            } else {
-                console.log(`Added a new face with id ${result.insertedId}`);
-            }
-            });
-            res.json({ "data": data,"error":false });
-        }
-    )
-    
+router.post('/', AuthMiddleWare, async function (req, res, next) {
+    const data = await PredictBasedOnPath(path)
+
+
+    let face = await FaceModel.create({
+        face: data[0],
+        checkedAt: new Date()
+    })
+    res.json({ "data": data, "error": face.id });
+
+
+
 });
 
 module.exports = router;
