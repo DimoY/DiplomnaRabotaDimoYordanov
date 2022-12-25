@@ -19,5 +19,8 @@
     "morgan": "~1.9.1",
     "node-oauth2-server": "^2.4.0",
     "sharp": "^0.31.3"
+  },
+  "nodemonConfig": {
+    "delay": 2500
   }
 }

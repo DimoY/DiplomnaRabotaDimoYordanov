@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
-const cameraRouter = require('./addCamera');
-router.use("/add",cameraRouter)
+const cameraAddRouter = require('./addCamera');
+const cameraDeleteRouter = require("./removeCamera")
+router.use("/add",cameraAddRouter)
+router.use("/remove",cameraDeleteRouter)
 module.exports = router;

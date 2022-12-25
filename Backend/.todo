@@ -1,4 +1,6 @@
 FIX: ENV JWT TOKEN
 FIX: Handle user error
+FIX: Correct error handling
 
 TODO: Model/Schema/Face/face see return type of model might need float 32
+

@@ -4,7 +4,6 @@ var sharp = require("sharp");
 const axios = require('axios');
 
 const userModel = require('../../../../model/model/User/user');
-
 const dbo = require("../../../../db/conn")
 const AuthMiddleWare = require("../../../Others/userIsAuthenticated")
 
@@ -40,17 +39,32 @@ async function PredictBasedOnPath(path) {
 
 router.post('/', AuthMiddleWare, async function (req, res, next) {
     const data = await PredictBasedOnPath(path)
-
+    if(req.body["personName"] == undefined){
+        res.json({ "reason": "No person name provided","status":"error" });
+        return
+    }
     console.log(req.username,req.password)
     let user = await userModel.findOne({
         username:req.username
     })
-
-    user.faces.push(data)
+    flag = false
+    for(const personIndex in user.faces){
+        if(user.faces[personIndex].personName == req.body["personName"] ){
+            flag = true
+            user.faces[personIndex].face.push(data[0])   
+        }
+    }
+    if(flag == false){
+        user.faces.push({
+            face:[data[0]],
+            personName:req.body["personName"],
+            hashedAt: new Date()
+        })
+    }
     user = await userModel.updateOne({
         username:user.username
     },user)
-    console.log(user)
+    
     res.json({ "data": data,"status":"ok" });
 });
 
