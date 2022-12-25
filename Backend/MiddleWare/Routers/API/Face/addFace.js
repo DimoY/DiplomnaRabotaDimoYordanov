@@ -4,7 +4,6 @@ var sharp = require("sharp");
 const axios = require('axios');
 
 const userModel = require('../../../../model/model/User/user');
-const dbo = require("../../../../db/conn")
 const AuthMiddleWare = require("../../../Others/userIsAuthenticated")
 
 path = "/run/media/dimoy/d910ca3f-8188-4f99-b7f3-9d2d45aaa2f6/home/dn/Documents/DiplomnaFolder/Backend/detcted2q.jpg"
@@ -51,12 +50,12 @@ router.post('/', AuthMiddleWare, async function (req, res, next) {
     for(const personIndex in user.faces){
         if(user.faces[personIndex].personName == req.body["personName"] ){
             flag = true
-            user.faces[personIndex].face.push(data[0])   
+            user.faces[personIndex].face.push({face:data[0],createdAt:new Date()})   
         }
     }
     if(flag == false){
         user.faces.push({
-            face:[data[0]],
+            face:[{face:data[0],createdAt:new Date()}],
             personName:req.body["personName"],
             hashedAt: new Date()
         })
@@ -65,7 +64,7 @@ router.post('/', AuthMiddleWare, async function (req, res, next) {
         username:user.username
     },user)
     
-    res.json({ "data": data,"status":"ok" });
+    res.json({ "data": true,"status":"ok" });
 });
 
 module.exports = router;

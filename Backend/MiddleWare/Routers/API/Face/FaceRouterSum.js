@@ -1,5 +1,9 @@
 var express = require('express');
 var router = express.Router();
-const faceRouter = require('./addFace');
-router.use("/add",faceRouter)
+const faceAddRouter = require('./addFace');
+const faceGetRouter = require('./getFaces');
+const faceUpdateRouter = require('./updateFace');
+router.use("/add",faceAddRouter)
+router.use("/get",faceGetRouter)
+router.use("/update",faceUpdateRouter)
 module.exports = router;

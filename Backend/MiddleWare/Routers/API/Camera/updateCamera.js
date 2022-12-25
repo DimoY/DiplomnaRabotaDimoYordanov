@@ -1,20 +1,28 @@
 var express = require('express');
 var router = express.Router();
 
-
 const userModel = require('../../../../model/model/User/user');
+
 const AuthMiddleWare = require("../../../Others/userIsAuthenticated")
 
-function DeleteCameraId(user,id) {
-    user.cameras = user.cameras.filter(
-        (e)=>{
-            return e._id != id
+
+function IsIpCorrect(ip) {
+    if(! Array.isArray(ip)){
+        return false
+    }
+    if(ip.length!=4){
+        return false
+    }
+    for (const key in ip) {
+        if(ip[key]<0 || ip[key]>255){
+            return false
         }
-    )
-    return user
+    }
+    return true
+    
 }
 
-router.delete("/",AuthMiddleWare,async function (req,res,next) {
+router.put("/",AuthMiddleWare,async function (req,res,next) {
     if(req.body["id"] == undefined ){
         res.json({ "reason": "No id provided","status":"error" });
         return
@@ -23,13 +31,25 @@ router.delete("/",AuthMiddleWare,async function (req,res,next) {
         res.json({ "reason": "Id is wrong type","status":"error" });
         return
     }
+    
     let user = await userModel.findOne({
         username:req.username
     })
+    for (const key in user.cameras) {
+        if(req.body["ip"] != undefined){
+            if(IsIpCorrect(req.body["ip"])){
+                user.cameras[key].ip = req.body["ip"]
+            }
+        }
+        if(req.body["cameraName"] != undefined){
+            user.cameras[key].name = req.body["cameraName"].toString()
+        }
+    }
     user = await userModel.updateOne({
         username:user.username
-    },DeleteCameraId(user,req.body["id"]))
+    },user)
     
     res.json({ "status":"ok" });
 })
+
 module.exports = router;

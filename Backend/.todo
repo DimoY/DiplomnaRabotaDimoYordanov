@@ -4,3 +4,6 @@ FIX: Correct error handling
 
 TODO: Model/Schema/Face/face see return type of model might need float 32
 
+TODO: check if remove face works,
+TODO: check if get face works
+TODO: Write face recognition logic

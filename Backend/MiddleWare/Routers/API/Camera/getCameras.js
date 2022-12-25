@@ -1,20 +1,17 @@
 var express = require('express');
-var router = express.Router();
 
+var router = express.Router();
 
 const userModel = require('../../../../model/model/User/user');
 const AuthMiddleWare = require("../../../Others/userIsAuthenticated")
 
-function DeleteCameraId(user,id) {
-    user.cameras = user.cameras.filter(
-        (e)=>{
-            return e._id != id
-        }
-    )
-    return user
-}
-
-router.delete("/",AuthMiddleWare,async function (req,res,next) {
+router.get("/",AuthMiddleWare,async function (req,res,next) {
+    let user = await userModel.findOne({
+        username:req.username
+    })
+    res.json({ "cameras":user.cameras });
+})
+router.get("/id/",AuthMiddleWare,async function (req,res,next) {
     if(req.body["id"] == undefined ){
         res.json({ "reason": "No id provided","status":"error" });
         return
@@ -23,13 +20,10 @@ router.delete("/",AuthMiddleWare,async function (req,res,next) {
         res.json({ "reason": "Id is wrong type","status":"error" });
         return
     }
+    
     let user = await userModel.findOne({
         username:req.username
     })
-    user = await userModel.updateOne({
-        username:user.username
-    },DeleteCameraId(user,req.body["id"]))
-    
-    res.json({ "status":"ok" });
+    res.json({ "cameras":user.cameras.filter((e)=>{return e._id = req.body["id"]}) });
 })
 module.exports = router;

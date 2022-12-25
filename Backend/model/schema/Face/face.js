@@ -1,5 +1,10 @@
 module.exports = {
-	face: [[Number]], 
+	face: [
+        {
+            face:[Number],
+            createdAt:Date
+        }
+    ], 
     personName:{type:String,unique:true},
     hashedAt: Date
 };

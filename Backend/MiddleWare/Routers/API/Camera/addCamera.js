@@ -1,10 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var sharp = require("sharp");
-const axios = require('axios');
 
 const userModel = require('../../../../model/model/User/user');
-const dbo = require("../../../../db/conn")
 const AuthMiddleWare = require("../../../Others/userIsAuthenticated")
 
 

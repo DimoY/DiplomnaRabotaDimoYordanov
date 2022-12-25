@@ -5,10 +5,10 @@ var router = express.Router();
 const userModel = require('../../../../model/model/User/user');
 const AuthMiddleWare = require("../../../Others/userIsAuthenticated")
 
-function DeleteCameraId(user,id) {
-    user.cameras = user.cameras.filter(
+function DeleteFaceId(user,id) {
+    user.faces = user.faces.map(
         (e)=>{
-            return e._id != id
+            return e.face.filter((e)=>{return e._id == id})
         }
     )
     return user
@@ -28,7 +28,7 @@ router.delete("/",AuthMiddleWare,async function (req,res,next) {
     })
     user = await userModel.updateOne({
         username:user.username
-    },DeleteCameraId(user,req.body["id"]))
+    },DeleteFaceId(user,req.body["id"]))
     
     res.json({ "status":"ok" });
 })
