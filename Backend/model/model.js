@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
  * Configuration.
  */
 
-var clientModel = require('./model/client'),
+var clientModel = require('./model/User/client'),
 	tokenModel = require('./model/token'),
 	userModel = require('./model/user');
 

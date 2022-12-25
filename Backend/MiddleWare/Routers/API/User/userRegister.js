@@ -11,7 +11,9 @@ router.post('/', async function (req, res, next) {
         var hash = bcrypt.hashSync(sent, 8);
         const user = await userModel.create({
             username:req.body.username,
-            password:hash
+            password:hash,
+            faces:[],
+            cameras:[]
         })
         res.json({status:"ok"})
     } catch (error) {

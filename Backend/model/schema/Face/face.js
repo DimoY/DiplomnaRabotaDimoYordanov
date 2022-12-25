@@ -1,4 +1,4 @@
 module.exports = {
 	face: [Number], 
-    checkedAt: Date
+    hashedAt: Date
 };
