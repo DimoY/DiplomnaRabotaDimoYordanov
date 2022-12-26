@@ -18,7 +18,6 @@ path = "/run/media/dimoy/d910ca3f-8188-4f99-b7f3-9d2d45aaa2f6/home/dn/Documents/
 async function PredictBasedOnPath(sharp_image) {
     let data = await sharp_image.raw().toBuffer()
 
-    console.log(data)
     listOfBuffers = []
     for (let i = 0; i < 32; i++) {
         imageColor = []
@@ -81,14 +80,19 @@ router.post('/', AuthMiddleWare, async function (req, res, next) {
     let id2 = 0
     for(const personIndex in user.faces){
         if(user.faces[personIndex].personName == req.body["personName"] ){
-            id = personIndex
+            id = personIndex+1
             id2 = user.faces[personIndex].face.length
             flag = true
             user.faces[personIndex].face.push({face:data[0],createdAt:new Date()})   
         }
     }
     if(flag == false){
-        id = user.faces.length()-1
+        try {
+            id = user.faces.length()
+        } catch (error) {
+            id = 0
+        }
+        
         user.faces.push({
             face:[{face:data[0],createdAt:new Date()}],
             personName:req.body["personName"],
