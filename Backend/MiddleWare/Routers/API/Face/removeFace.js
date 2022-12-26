@@ -14,7 +14,7 @@ function DeleteFaceId(user,id) {
     return user
 }
 
-router.delete("/",AuthMiddleWare,async function (req,res,next) {
+router.delete("/face/",AuthMiddleWare,async function (req,res,next) {
     if(req.body["id"] == undefined ){
         res.json({ "reason": "No id provided","status":"error" });
         return
@@ -32,4 +32,33 @@ router.delete("/",AuthMiddleWare,async function (req,res,next) {
     
     res.json({ "status":"ok" });
 })
+
+function DeletePersonId(user,id) {
+    user.faces = user.faces.filter(
+        (e)=>{
+            return e._id == id
+        }
+    )
+    return user
+}
+
+router.delete("/person/",AuthMiddleWare,async function (req,res,next) {
+    if(req.body["id"] == undefined ){
+        res.json({ "reason": "No id provided","status":"error" });
+        return
+    }
+    if(Number.isInteger(req.body["id"])){
+        res.json({ "reason": "Id is wrong type","status":"error" });
+        return
+    }
+    let user = await userModel.findOne({
+        username:req.username
+    })
+    user = await userModel.updateOne({
+        username:user.username
+    },DeletePersonId(user,req.body["id"]))
+    
+    res.json({ "status":"ok" });
+})
+
 module.exports = router;
