@@ -7,8 +7,6 @@ const bodyParser = require('body-parser');
 const oauthserver = require('node-oauth2-server');
 
 
-const indexRouter = require('../MiddleWare/Routers/index');
-const usersRouter = require('../MiddleWare/Routers/users');
 const APIRouter = require('../MiddleWare/Routers/API/APISum');
 const {  mongoose } = require("mongoose");
 
@@ -25,8 +23,6 @@ function AppUseDefines(app) {
     app.use(bodyParser.json());
 
     
-    app.use('/', indexRouter);
-    app.use('/users', usersRouter);
     app.use("/api",APIRouter);
 }
 module.exports = AppUseDefines;
