@@ -13,7 +13,8 @@ router.post('/', async function (req, res, next) {
             username:req.body.username,
             password:hash,
             faces:[],
-            cameras:[]
+            cameras:[],
+            notifications:[]
         })
         res.json({status:"ok"})
     } catch (error) {

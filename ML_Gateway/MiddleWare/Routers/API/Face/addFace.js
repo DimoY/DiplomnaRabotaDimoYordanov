@@ -17,17 +17,9 @@ path = "/run/media/dimoy/d910ca3f-8188-4f99-b7f3-9d2d45aaa2f6/home/dn/Documents/
 
 async function PredictBasedOnPath(sharp_image) {
     let data = await sharp_image.raw().toBuffer()
+    
 
-    listOfBuffers = []
-    for (let i = 0; i < 32; i++) {
-        imageColor = []
-        for (let j = 0; j < 96; j += 3) {
-            imageColor.push(data.slice(i * 32 * 3 + j, i * 32 * 3 + j + 3).toJSON()["data"])
-        }
-        listOfBuffers.push(imageColor)
-    }
-
-    data = { "signature_name": "serving_default", "instances": [listOfBuffers] }
+    data = { "signature_name": "serving_default", "instances": [data.toJSON()["data"]] }
     headers = { 'Content-Type': 'application/json;charset=utf-8' }
     let response = await axios({
         method: 'post',
@@ -70,8 +62,8 @@ router.post('/', AuthMiddleWare, async function (req, res, next) {
           channels: 3
         }
       })
-    const imageS3 = await imageBuffer.png().toBuffer()
-    const data = await PredictBasedOnPath(imageBuffer.resize(32,32))
+    const imageS3Promise = imageBuffer.png().toBuffer()
+    const data = PredictBasedOnPath(imageBuffer.resize(32,32))
     let user = await userModel.findOne({
         username:req.username
     })
@@ -83,23 +75,23 @@ router.post('/', AuthMiddleWare, async function (req, res, next) {
             id = personIndex+1
             id2 = user.faces[personIndex].face.length
             flag = true
-            user.faces[personIndex].face.push({face:data[0],createdAt:new Date()})   
+            user.faces[personIndex].face.push({face:(await data)[0],createdAt:new Date()})   
         }
     }
     if(flag == false){
         try {
-            id = user.faces.length()
+            id = user.faces.length
         } catch (error) {
             id = 0
         }
         
         user.faces.push({
-            face:[{face:data[0],createdAt:new Date()}],
+            face:[{face:(await data)[0],createdAt:new Date()}],
             personName:req.body["personName"],
             hashedAt: new Date()
         })
     }
-    
+    let imageS3 = await imageS3Promise
     const resultS3Image = await S3.putObject({
         Body: imageS3,
         Bucket: "diplomna-rabota",

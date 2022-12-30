@@ -10,13 +10,13 @@ async function UserIsAuthenticated(req,res,next) {
     }
     const decoded = jwt.verify(token,process.env.JWTSecret)
     const user = await userModel.findOne({
-        username:req.body.username
+        username:decoded.username
     })
     if(!user){
         res.json({"status":"error","reason":"Username is not correct"})
         return;
     }
-    let password = req.body.password
+    let password = decoded.password
     if(!bcrypt.compareSync( password,user.password)){
         res.json({status:"error", reason:"Password is not correct"})
         return;

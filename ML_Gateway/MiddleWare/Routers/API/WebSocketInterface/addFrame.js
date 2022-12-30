@@ -36,7 +36,7 @@ router.post('/', async function (req, res, next) {
       console.log(querry)
     
       let headers = { 'Content-Type': 'application/json;charset=utf-8' }
-      let data = {"KEY":key}
+      let data = {"KEY":key,"camera-id":req.body["camera-id"],"date":req.body["date"]}
       let resp = await axios({
         method: "post",
         url: 'http://localhost:3000/api/-private/-private-add/',
