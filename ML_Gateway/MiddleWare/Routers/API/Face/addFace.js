@@ -63,6 +63,14 @@ router.post('/', AuthMiddleWare, async function (req, res, next) {
         }
       })
     const imageS3Promise = imageBuffer.png().toBuffer()
+    let imageS3 = await imageS3Promise
+    const key_value = user._id.toString()+"_"+id.toString()+"_"+id2.toString()+"_Image.png"
+    const resultS3Image = await S3.putObject({
+        Body: imageS3,
+        Bucket: "diplomna-rabota",
+        Key:key_value
+    }).promise()
+    console.log(resultS3Image)
     const data = PredictBasedOnPath(imageBuffer.resize(32,32))
     let user = await userModel.findOne({
         username:req.username
@@ -75,7 +83,7 @@ router.post('/', AuthMiddleWare, async function (req, res, next) {
             id = personIndex+1
             id2 = user.faces[personIndex].face.length
             flag = true
-            user.faces[personIndex].face.push({face:(await data)[0],createdAt:new Date()})   
+            user.faces[personIndex].face.push({face:(await data)[0],createdAt:new Date(),pictureAt:key_value})   
         }
     }
     if(flag == false){
@@ -86,17 +94,12 @@ router.post('/', AuthMiddleWare, async function (req, res, next) {
         }
         
         user.faces.push({
-            face:[{face:(await data)[0],createdAt:new Date()}],
+            face:[{face:(await data)[0],createdAt:new Date(),pictureAt:key_value}],
             personName:req.body["personName"],
             hashedAt: new Date()
         })
     }
-    let imageS3 = await imageS3Promise
-    const resultS3Image = await S3.putObject({
-        Body: imageS3,
-        Bucket: "diplomna-rabota",
-        Key:user._id.toString()+"_"+id.toString()+"_"+id2.toString()+"_Image.png"
-    }).promise()
+    
     user = await userModel.updateOne({
         username:user.username
     },user)

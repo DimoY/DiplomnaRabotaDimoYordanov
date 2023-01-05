@@ -5,6 +5,9 @@ import LoginForm from "./components/UserLogin_Register/LoginForm/LoginForm";
 import CameraWindow from "./components/CameraFeed/CameraWindow";
 import Importance from "./definitions/Enums/Importance/Importance";
 import NotificationGroup from "./components/Notification/NotificationGroup/NotificationGroup";
+import RegisterForm from './components/UserLogin_Register/RegisterForm/RegisterForm';
+import CameraList from './components/Camera/CameraList';
+import FaceWindow from './components/Faces/FaceList';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -13,12 +16,14 @@ function App() {
     ["10-16-2012",[{message:"obame",importanceLevel:Importance.Informative}]]
   ]);
 
-  let loginWidget = (<LoginForm/>)
-  let cameraWidget = (<CameraWindow/>)
+  let registerWidget = (<div><RegisterForm/><br/><br/><LoginForm/></div>)
+  let liveWidget = (<CameraWindow/>)
   let notificationWidget = (<NotificationGroup data = {mapper}/>)
+  let cameraWidget=  (<CameraList/>)
+  let faceWidget = (<FaceWindow/>)
   return (
     <div className="App">
-      <TopMenuBar loginWidget = {loginWidget} cameraWidget = {cameraWidget} notificationWidget = {notificationWidget}/>
+      <TopMenuBar loginWidget = {registerWidget} liveWidget = {liveWidget} notificationWidget = {notificationWidget} cameraWidget = {cameraWidget} faceWidget = {faceWidget}/>
     </div>
   )
 }

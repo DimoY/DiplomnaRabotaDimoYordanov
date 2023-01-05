@@ -12,5 +12,5 @@ router.use("/camera",cameraRouter)
 router.use("/user",userRouter)
 router.use("/ws",webSocketInterfaceRouter)
 router.use("/-private",ImageShlyzRouter)
-router.use("/-private-notifications",NotificationRouter)
+router.use("/notifications",NotificationRouter)
 module.exports = router;

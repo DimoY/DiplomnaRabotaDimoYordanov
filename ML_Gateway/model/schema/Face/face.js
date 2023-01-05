@@ -2,7 +2,8 @@ module.exports = {
 	face: [
         {
             face:[Number],
-            createdAt:Date
+            createdAt:Date,
+            pictureAt:String
         }
     ], 
     personName:{type:String,unique:true},

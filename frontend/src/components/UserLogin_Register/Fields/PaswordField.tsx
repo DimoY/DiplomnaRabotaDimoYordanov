@@ -3,6 +3,12 @@ import {TextField} from "@mui/joy";
 
 
 class PasswordField extends React.Component{
+    constructor(props:{}) {
+        super(props);
+        this.state = {
+            "setPassword":props.textChange
+        }
+    }
     render() {
         return (
             <div>
@@ -13,6 +19,7 @@ class PasswordField extends React.Component{
                     size="md"
                     variant="soft"
                     type="password"
+                    onChange={(e)=>{this.state["setPassword"](e.target.value)}}
                 />
             </div>
         );

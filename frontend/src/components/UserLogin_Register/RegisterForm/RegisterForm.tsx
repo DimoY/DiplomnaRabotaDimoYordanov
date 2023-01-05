@@ -9,12 +9,43 @@ class RegisterForm extends React.Component{
     constructor(props:{}) {
         super(props);
         this.state = {
+            "username":"",
+            "password":"password"
         }
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.setUsername = this.setUsername.bind(this) 
+        this.setPassword = this.setPassword.bind(this) 
     }
     handleSubmit(e:FormEvent<HTMLFormElement>){
         e.preventDefault()
-        console.log(e)
+        const body = JSON.stringify({
+            "username":this.state["username"],
+            "password":this.state["password"]
+        })
+        let res = fetch("http://localhost:3000/api/user/register/",
+            {
+                method:"post",
+                headers: {
+                  'content-type': 'application/json;charset=UTF-8',
+                },
+                body:body
+            }
+        ).then(async function(e){
+            if (!e.ok){
+                console.log("Fetching error")
+            }
+            console.log(await e.json())
+        })
+    }
+    setUsername(val:String){
+        this.setState({
+            "username":val
+        })
+    }
+    setPassword(val:String){
+        this.setState({
+            "password":val
+        })
     }
     render() {
         return (
@@ -23,9 +54,8 @@ class RegisterForm extends React.Component{
                     Register
                 </Typography>
                 <form onSubmit={this.handleSubmit}>
-                    <UsernameField/>
-                    <EmailField/>
-                    <PaswordField/>
+                    <UsernameField textChange = {this.setUsername} />
+                    <PaswordField textChange = {this.setPassword} />
                     <SubmitButton/>
                 </form>
             </div>

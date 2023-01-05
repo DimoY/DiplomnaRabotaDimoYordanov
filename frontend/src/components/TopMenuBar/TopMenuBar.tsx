@@ -13,8 +13,10 @@ class TopMenuBar extends React.Component{
 
         this.state = {
             loginWidget:props.loginWidget,
+            liveWidget:props.liveWidget,
+            notificationWidget:props.notificationWidget,
             cameraWidget:props.cameraWidget,
-            notificationWidget:props.notificationWidget
+            faceWidget:props.faceWidget
         }
     }
     render(){
@@ -83,6 +85,8 @@ class TopMenuBar extends React.Component{
                                 </Chip>
                             </Tab>
                             <Tab>LiveFeed</Tab>
+                            <Tab>Faces</Tab>
+                            <Tab>Cameras</Tab>
                         </TabList>
                         <Box
                             sx={(theme) => ({
@@ -110,6 +114,12 @@ class TopMenuBar extends React.Component{
                                 {this.state.notificationWidget}
                             </TabPanel>
                             <TabPanel value={2}>
+                                {this.state.liveWidget}
+                            </TabPanel>
+                            <TabPanel value={3}>
+                                {this.state.faceWidget}
+                            </TabPanel>
+                            <TabPanel value={4}>
                                 {this.state.cameraWidget}
                             </TabPanel>
                         </Box>

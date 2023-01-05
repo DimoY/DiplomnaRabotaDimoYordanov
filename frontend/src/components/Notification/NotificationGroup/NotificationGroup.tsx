@@ -7,6 +7,7 @@ import Switch from '@mui/joy/Switch';
 import Prop_NotificationGroup from "../../../definitions/props/Notification/Prop_NotificationGroup";
 import NotificationLine from "../NotificationLine/NotificationLine";
 import React from "react";
+import Importance from '../../../definitions/Enums/Importance/Importance';
 
 class NotificationGroup extends React.Component{
     constructor(props:Prop_NotificationGroup){
@@ -15,29 +16,52 @@ class NotificationGroup extends React.Component{
             list:[],
             date:[]
         }
-        for(const KeyValuePair of this.props.data.entries()){
-            let item = [];
-            for (const listItem of KeyValuePair[1]){
-                item.push(
-                    <ListItem>
-                        <ListItemButton>
-                            <NotificationLine message = {listItem.message} importanceLevel = {listItem.importanceLevel}/>
-                        </ListItemButton>
-                    </ListItem>
-                )
+        let data = window.localStorage.getItem("USER_KEY")
+        if(data==null){
+            this.state.list = [(<h1>You are not logged in</h1>)]
+        }else{
+            async function getNotifications() {
+                let res = await fetch("http://localhost:3000/api/notifications/",
+                {
+                    method:"get",
+                    headers: {
+                    'x-access-token': data,
+                    }
+                })
+                if(!res.ok){
+                    return
+                }
+                let notifications= await res.json()
+                console.log(notifications)
+                let item = [];
+                for(const notificatiom in notifications["notifications"]){
+                        let notification = notifications["notifications"][notificatiom]
+                        item.push(
+                            <ListItem key = {notificatiom}>
+                                <ListItemButton>
+                                    <NotificationLine  message = {notification.title} importanceLevel = {Importance.Informative}/>
+                                </ListItemButton>
+                            </ListItem>
+                        )
+                    
+                    // this.state.date.push(new Date(KeyValuePair[0]))
+                    // let value = (
+                    //         <ListItem nested>
+                    //             <ListSubheader>{KeyValuePair[0]}</ListSubheader>
+                    //             <List>
+                    //                 {item}
+                    //             </List>
+                    //         </ListItem>
+                    //     );
+                        }
+                this.setState({
+                    list:item
+                })
             }
-            this.state.date.push(new Date(KeyValuePair[0]))
-            let value = (
-                    <ListItem nested>
-                        <ListSubheader>{KeyValuePair[0]}</ListSubheader>
-                        <List>
-                            {item}
-                        </List>
-                    </ListItem>
-                );
-
-            this.state.list=value
+            let getNotificationBiden = getNotifications.bind(this)
+            getNotificationBiden()
         }
+        
     }
     render(){
         return (
