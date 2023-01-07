@@ -16,7 +16,7 @@ class FaceWidget extends React.Component {
     }
     render() {
         return (
-                <Card variant="outlined" sx={{ width: 320 }}>
+                <Card variant="outlined" sx={{ "margin-bottom": 4, width: 320 }}>
                     <CardOverflow>
                         <AspectRatio ratio="2">
                             <img

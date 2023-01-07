@@ -23,6 +23,7 @@ function IsIpCorrect(ip) {
 
 
 router.post('/', AuthMiddleWare, async function (req, res, next) {
+    console.log(req.body)
    if(req.body["cameraName"] == undefined){
         res.json({ "reason": "No camera name provided","status":"error" });
         return

@@ -107,4 +107,64 @@ router.post('/', AuthMiddleWare, async function (req, res, next) {
     res.json({ "data": true,"status":"ok" });
 });
 
+router.post('/browser/', AuthMiddleWare, async function (req, res, next) {
+    console.log(req.body)
+    if(req.body["faceArray"] == undefined){
+        res.json({ "reason": "Face was not given","status":"error" });
+    }
+    const image=  req.body["faceArray"]
+
+
+    if(req.body["personName"] == undefined){
+        res.json({ "reason": "No person name provided","status":"error" });
+        return
+    }
+    console.log(req.username,req.password)
+    let imageBuffer =  sharp(image)
+    const imageS3Promise = imageBuffer.png().toBuffer()
+    let imageS3 = await imageS3Promise
+    const key_value = user._id.toString()+"_"+id.toString()+"_"+id2.toString()+"_Image.png"
+    const resultS3Image = await S3.putObject({
+        Body: imageS3,
+        Bucket: "diplomna-rabota",
+        Key:key_value
+    }).promise()
+    console.log(resultS3Image)
+    const data = PredictBasedOnPath(imageBuffer.resize(32,32))
+    let user = await userModel.findOne({
+        username:req.username
+    })
+    flag = false
+    let id = 0
+    let id2 = 0
+    for(const personIndex in user.faces){
+        if(user.faces[personIndex].personName == req.body["personName"] ){
+            id = personIndex+1
+            id2 = user.faces[personIndex].face.length
+            flag = true
+            user.faces[personIndex].face.push({face:(await data)[0],createdAt:new Date(),pictureAt:key_value})   
+        }
+    }
+    if(flag == false){
+        try {
+            id = user.faces.length
+        } catch (error) {
+            id = 0
+        }
+        
+        user.faces.push({
+            face:[{face:(await data)[0],createdAt:new Date(),pictureAt:key_value}],
+            personName:req.body["personName"],
+            hashedAt: new Date()
+        })
+    }
+    
+    user = await userModel.updateOne({
+        username:user.username
+    },user)
+    
+    res.json({ "data": true,"status":"ok" });
+});
+
+
 module.exports = router;

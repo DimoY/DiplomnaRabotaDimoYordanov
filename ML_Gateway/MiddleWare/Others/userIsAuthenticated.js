@@ -8,7 +8,12 @@ async function UserIsAuthenticated(req,res,next) {
         res.json({"status":"error","reason":"There is no token, weird ..."})
         return;
     }
-    const decoded = jwt.verify(token,process.env.JWTSecret)
+    try {
+        const decoded = jwt.verify(token,process.env.JWTSecret)
+    } catch (error) {
+        res.json({status:"error", reason:" jwt Problem",error:error.toString()})
+    }
+    
     const user = await userModel.findOne({
         username:decoded.username
     })

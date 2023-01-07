@@ -8,7 +8,7 @@ class CameraAddForm extends React.Component {
     constructor(props: any) {
         super(props)
         this.state = {
-            setInfo:props.setInfo
+            setInfo:props.setInfo,
         }
     }
 
@@ -20,11 +20,31 @@ class CameraAddForm extends React.Component {
                 label="Camera name"
                 placeholder="Name of the camera"
                 required
+                onChange={(e)=>{this.state.setInfo({"type":"name","value":e.target.value})}}
                 />
                 <TextField
                 id="standard-number"
                 label="Number"
                 type="number"
+                onChange={(e)=>{this.state.setInfo({"type":"ip0","value":e.target.value})}}
+                />
+                <TextField
+                id="standard-number"
+                label="Number"
+                type="number"
+                onChange={(e)=>{this.state.setInfo({"type":"ip1","value":e.target.value})}}
+                />
+                <TextField
+                id="standard-number"
+                label="Number"
+                type="number"
+                onChange={(e)=>{this.state.setInfo({"type":"ip2","value":e.target.value})}}
+                />
+                <TextField
+                id="standard-number"
+                label="Number"
+                type="number"
+                onChange={(e)=>{this.state.setInfo({"type":"ip3","value":e.target.value})}}
                 />
 
             </div>
