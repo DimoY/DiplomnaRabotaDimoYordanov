@@ -32,6 +32,14 @@ router.post('/', AuthMiddleWare, async function (req, res, next) {
         res.json({ "reason": "No ip provided","status":"error" });
         return
     }
+    if(req.body["cameraType"] == undefined ){
+        res.json({ "reason": "No camera type provided","status":"error" });
+        return
+    }
+    if(req.body["cameraType"] != "outside" && req.body["cameraType"] != "in car" ){
+        res.json({ "reason": "Wrong camera type provided","status":"error" });
+        return
+    }
     if(!IsIpCorrect(req.body["ip"])){
         res.json({ "reason": "Wrong ip provided","status":"error" });
         return
@@ -49,6 +57,7 @@ router.post('/', AuthMiddleWare, async function (req, res, next) {
     user.cameras.push({
         ip:req.body["ip"],
         name:req.body["cameraName"],
+        cameraType:req.body["cameraType"],
         createdAt: new Date(),
         updatedAt: new Date()
     })

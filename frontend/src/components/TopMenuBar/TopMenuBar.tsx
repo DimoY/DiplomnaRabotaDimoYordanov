@@ -71,7 +71,7 @@ class TopMenuBar extends React.Component{
                             }}
                         >
                             <Tab>
-                                Log in{" "}
+                                {window.localStorage.getItem("USER_KEY") == null ? "Login":"Logout"}
                             </Tab>
                             <Tab>
                                 Notifications{' '}

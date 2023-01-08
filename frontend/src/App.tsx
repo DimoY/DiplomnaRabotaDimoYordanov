@@ -8,6 +8,7 @@ import NotificationGroup from "./components/Notification/NotificationGroup/Notif
 import RegisterForm from './components/UserLogin_Register/RegisterForm/RegisterForm';
 import CameraList from './components/Camera/CameraList';
 import FaceWindow from './components/Faces/FaceList';
+import UserAuthWidget from './components/UserLogin_Register/MainForm';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -16,7 +17,7 @@ function App() {
     ["10-16-2012",[{message:"obame",importanceLevel:Importance.Informative}]]
   ]);
 
-  let registerWidget = (<div><RegisterForm/><br/><br/><LoginForm/></div>)
+  let registerWidget = (<UserAuthWidget/>)
   let liveWidget = (<CameraWindow/>)
   let notificationWidget = (<NotificationGroup data = {mapper}/>)
   let cameraWidget=  (<CameraList/>)

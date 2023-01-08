@@ -31,7 +31,8 @@ class CameraWindow extends React.Component {
         this.state = {
             "list": [],
             "form-name":"",
-            "form-ip":[0,0,0,0]
+            "form-ip":[0,0,0,0],
+            "form-cameraType":"inside"
         };
         
         let data = window.localStorage.getItem("USER_KEY")
@@ -51,17 +52,28 @@ class CameraWindow extends React.Component {
             this.setState({
                 "form-name":value
             })
-        }else{
+        }else if(name == "cameraType"){
+            this.setState({
+                "form-cameraType":value
+            })
+        }
+        else{
+            
             let val = this.state["form-ip"]
             val[Number.parseInt(name[2])] =Number.parseInt(value)
             this.setState({
                 "form-ip":val
             })
         }
-        console.log(this.state)
     }
     addNewCamera(e:any){
         async function addCameras(token: String) {
+            console.log(JSON.stringify({
+                "cameraName":this.state["form-name"],
+                "ip":this.state["form-ip"],
+                "cameraType":this.state["form-cameraType"]
+            
+        }))
             const req = await fetch("http://localhost:3000/api/camera/add/",
                     {
                         method:"post",
@@ -71,7 +83,8 @@ class CameraWindow extends React.Component {
                         },
                         body:JSON.stringify({
                                 "cameraName":this.state["form-name"],
-	                            "ip":this.state["form-ip"]
+	                            "ip":this.state["form-ip"],
+                                "cameraType":this.state["form-cameraType"]
                             
                         })
                     })
