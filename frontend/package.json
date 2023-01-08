@@ -10,18 +10,18 @@
     "test": "vitest"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "@emotion/styled": "^11.10.5",
-    "@mui/joy": "^5.0.0-alpha.57",
     "@emotion/react": "latest",
-    "@mui/icons-material": "^5.10.16"
+    "@emotion/styled": "^11.10.5",
+    "@mui/icons-material": "^5.10.16",
+    "@mui/joy": "^5.0.0-alpha.57",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@testing-library/react": "^13.4.0",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
     "@vitejs/plugin-react": "^2.2.0",
-    "@testing-library/react": "^13.4.0",
     "jsdom": "^20.0.3",
     "typescript": "^4.6.4",
     "vite": "^3.2.3",

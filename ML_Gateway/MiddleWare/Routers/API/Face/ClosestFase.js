@@ -67,7 +67,7 @@ router.post('/-private/', async function (req, res, next) {
             let val = e.face.map(
                 (e)=>{
                     let sum = 0;
-                    for(let i = 0;i<512;i++){
+                    for(let i = 0;i<1024;i++){
                         sum+=Math.abs(e.face[i]-data[0][i])
                     }
                     return sum
@@ -89,6 +89,7 @@ router.post('/-private/', async function (req, res, next) {
         key = ""
         found  = false
         name = "unrecognised"
+        imageBuffer.png().toFile("bazingen.png")
     }else{
         key = user._id.toString()+"_"+user.faces[i].personName+"_"+new Date().toString()+"_"+Math.floor(Math.random() * 10000000000).toString(16)+"_Image.png"
         found = true    

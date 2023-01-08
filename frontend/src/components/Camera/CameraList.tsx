@@ -1,4 +1,4 @@
-import { Button } from "@mui/joy";
+import { Button, Stack } from "@mui/joy";
 import React from "react";
 import CameraAddForm from "./CameraAddForm";
 
@@ -93,7 +93,14 @@ class CameraWindow extends React.Component {
             <div>
                 <CameraAddForm setInfo = {this.infoChange.bind(this)}/>
                 <Button color="primary" onClick={this.addNewCamera.bind(this)} >Add new camera</Button>
-                <div>{this.state["list"]}</div>
+                
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={2}
+                >
+                    {this.state["list"]}
+                </Stack>
             </div>
         );
     }

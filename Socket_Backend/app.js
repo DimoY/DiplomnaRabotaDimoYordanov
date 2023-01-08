@@ -50,7 +50,7 @@ app.ws('/:cameraid', function (ws, req) {
         height: height,
         channels: chanes,
       }
-    }).png()
+    }).resize(width/4,height/4).png()
     let datetime = (new Date()).toTimeString()
     console.log(req.params["cameraid"] + "_Image.png")
     image.toFile(req.params["cameraid"] + "_Image.png")

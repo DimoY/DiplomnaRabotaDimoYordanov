@@ -19,7 +19,7 @@ class CameraWindow extends React.Component {
     render() {
         return (
                 <Card variant="outlined" sx={{ width: 320 }}>
-                    <CardOverflow>
+                    {/* <CardOverflow>
                         <AspectRatio ratio="2">
                             <img
                                 src="https://images.unsplash.com/photo-1532614338840-ab30cf10ed36?auto=format&fit=crop&w=318"
@@ -28,7 +28,7 @@ class CameraWindow extends React.Component {
                                 alt=""
                             />
                         </AspectRatio>
-                    </CardOverflow>
+                    </CardOverflow> */}
                     <Typography level="h2" sx={{ fontSize: 'md', mt: 2 }}>
                         {this.state["name"]}
                     </Typography>

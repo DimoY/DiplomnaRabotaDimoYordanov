@@ -8,8 +8,9 @@ async function UserIsAuthenticated(req,res,next) {
         res.json({"status":"error","reason":"There is no token, weird ..."})
         return;
     }
+    let decoded;
     try {
-        const decoded = jwt.verify(token,process.env.JWTSecret)
+        decoded = jwt.verify(token,process.env.JWTSecret)
     } catch (error) {
         res.json({status:"error", reason:" jwt Problem",error:error.toString()})
     }

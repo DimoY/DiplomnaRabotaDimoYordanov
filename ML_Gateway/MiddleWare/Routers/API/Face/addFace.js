@@ -108,22 +108,23 @@ router.post('/', AuthMiddleWare, async function (req, res, next) {
 });
 
 router.post('/browser/', AuthMiddleWare, async function (req, res, next) {
-    console.log(req.body)
     if(req.body["faceArray"] == undefined){
         res.json({ "reason": "Face was not given","status":"error" });
     }
-    const image=  req.body["faceArray"]
-
+    const image=  new Uint8Array(Object.values(req.body["faceArray"]))
 
     if(req.body["personName"] == undefined){
         res.json({ "reason": "No person name provided","status":"error" });
         return
     }
+    let user = await userModel.findOne({
+        username:req.username
+    })
     console.log(req.username,req.password)
     let imageBuffer =  sharp(image)
     const imageS3Promise = imageBuffer.png().toBuffer()
     let imageS3 = await imageS3Promise
-    const key_value = user._id.toString()+"_"+id.toString()+"_"+id2.toString()+"_Image.png"
+    const key_value = user._id.toString()+"_"+Math.floor(Math.random()*1000000).toString()+"_Image.png"
     const resultS3Image = await S3.putObject({
         Body: imageS3,
         Bucket: "diplomna-rabota",
@@ -131,9 +132,7 @@ router.post('/browser/', AuthMiddleWare, async function (req, res, next) {
     }).promise()
     console.log(resultS3Image)
     const data = PredictBasedOnPath(imageBuffer.resize(32,32))
-    let user = await userModel.findOne({
-        username:req.username
-    })
+   
     flag = false
     let id = 0
     let id2 = 0

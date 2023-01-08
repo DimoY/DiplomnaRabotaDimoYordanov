@@ -59,7 +59,7 @@ router.post('/', async function (req, res, next) {
             notificationResp  = await axios({
                 method:"post",
                 url:"http://localhost:3000/api/notifications/-private-FaceRecognised-Notification/",
-                data:{"username":user.username,"person":response["data"]["person"],"S3ImageKey":response["data"]["S3Imagekey"]},
+                data:{"username":user.username,"person":response["data"]["person"],"S3ImageKey":response["data"]["S3Imagekey"],"camera-id":req.body["camera-id"]},
                 headers:{}
             })
         }

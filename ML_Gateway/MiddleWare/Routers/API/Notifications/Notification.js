@@ -16,7 +16,7 @@ class Notification{
         let img = req.body["S3ImageKey"]
 
         user.notifications.push({
-            title:String(this.notificationInfo["title"]+person),
+            title:String(this.notificationInfo["title"]+person+" on camera "+req.body["camera-id"]),
             description:String(this.notificationInfo["description"]+person),
             notificationType:String(this.notificationLevel),
             S3ImgKey:img

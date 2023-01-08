@@ -4,7 +4,7 @@ import React from "react";
 
 import FaceWidget from "./FaceWidget"
 import FaceAddForm from "./FaceAddForm";
-import { Button } from "@mui/joy";
+import { Button, Stack } from "@mui/joy";
 //<CameraWidget cameraName = {"Mr camington"} ip = {[255,255,255,255]} dateLastStreamd = {new Date()}/>
 
 class FaceWindow extends React.Component {
@@ -14,14 +14,17 @@ class FaceWindow extends React.Component {
         {
             headers:{
                 "x-access-token":token
-            }
+            },
+            mode:"cors"
         })
         const faces = await req.json()
         console.log(faces)
         let list = []
         for(const face of faces["faces"]){
+            console.log(face)
+            const image_url = "https://diplomna-rabota.s3.eu-central-1.amazonaws.com/"+face["face"][0].pictureAt
             list.push((
-                <FaceWidget key = {face._id} faceName = {face.personName} faceUrl = {"https://images.unsplash.com/photo-1532614338840-ab30cf10ed36?auto=format&fit=crop&w=318"} />
+                <FaceWidget key = {face._id} faceName = {face.personName} faceUrl = {image_url} num={face["face"].length}/>
             ))
         }
         this.setState({
@@ -58,6 +61,7 @@ class FaceWindow extends React.Component {
             this.setState({
                 "file":new Uint8Array(arrBuff)
             })
+            
         };
         reader.readAsArrayBuffer(e);
         
@@ -73,6 +77,7 @@ class FaceWindow extends React.Component {
             const req = await fetch("http://localhost:3000/api/face/add/browser/",
                     {
                         method:"post",
+                        mode:"cors",
                         headers: {
                             "x-access-token": token,
                             "content-type":"application/json"
@@ -106,7 +111,13 @@ class FaceWindow extends React.Component {
                     <Button color="primary" onClick={((e)=>{
                         this.handleAddFace(e)
                     }).bind(this)} >Add new face</Button>
-                    <div>{this.state["list"]}</div>
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        spacing={2}
+                    >   
+                        {this.state["list"]}
+                    </Stack>
                 </div>
             );
     }

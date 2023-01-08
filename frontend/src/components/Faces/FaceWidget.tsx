@@ -11,23 +11,24 @@ class FaceWidget extends React.Component {
         super(props);
         this.state = {
             "name": props.faceName,
-            "url": props.faceUrl
+            "url": props.faceUrl,
+            "num":props.num
         };
     }
     render() {
         return (
                 <Card variant="outlined" sx={{ "margin-bottom": 4, width: 320 }}>
                     <CardOverflow>
-                        <AspectRatio ratio="2">
+                        <AspectRatio ratio="1">
                             <img
                                 src={this.state["url"]}
                                 loading="lazy"
-                                alt=""
+                                alt="face pictyre"
                             />
                         </AspectRatio>
                     </CardOverflow>
                     <Typography level="h2" sx={{ fontSize: 'md', mt: 2 }}>
-                        Person named {this.state["name"]}
+                        Person named {this.state["name"]}. You have {this.state["num"]} images
                     </Typography>
                 </Card>
             );
