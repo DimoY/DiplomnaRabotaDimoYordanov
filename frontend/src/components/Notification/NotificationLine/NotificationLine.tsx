@@ -38,7 +38,8 @@ class NotificationLine extends React.Component{
             message:props.message,
             color:color,
             type:type,
-            icon:icon
+            icon:icon,
+            img:props.S3ImgKey
 
         }
     }
@@ -53,6 +54,7 @@ class NotificationLine extends React.Component{
                     </React.Fragment>
                 }
             >
+                <img src={"https://diplomna-rabota.s3.eu-central-1.amazonaws.com/"+this.state["img"]} alt="image" />
                 <Typography sx={{ color: 'white' }} fontWeight="md">
                     {this.state.message}
                 </Typography>

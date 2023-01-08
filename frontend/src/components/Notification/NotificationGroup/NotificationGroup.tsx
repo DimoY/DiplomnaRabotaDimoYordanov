@@ -36,10 +36,11 @@ class NotificationGroup extends React.Component{
                 let item = [];
                 for(const notificatiom in notifications["notifications"]){
                         let notification = notifications["notifications"][notificatiom]
+                        console.log(notification)
                         item.push(
                             <ListItem key = {notificatiom}>
                                 <ListItemButton>
-                                    <NotificationLine  message = {notification.title} importanceLevel = {Importance.Informative}/>
+                                    <NotificationLine  message = {notification.title} importanceLevel = {Importance.Informative} S3ImgKey={notification["S3ImgKey"]}/>
                                 </ListItemButton>
                             </ListItem>
                         )

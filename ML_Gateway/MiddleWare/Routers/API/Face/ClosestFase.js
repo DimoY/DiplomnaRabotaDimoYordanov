@@ -91,7 +91,8 @@ router.post('/-private/', async function (req, res, next) {
         name = "unrecognised"
         imageBuffer.png().toFile("bazingen.png")
     }else{
-        key = user._id.toString()+"_"+user.faces[i].personName+"_"+new Date().toString()+"_"+Math.floor(Math.random() * 10000000000).toString(16)+"_Image.png"
+        let date = new Date()
+        key = user._id.toString()+"_"+user.faces[i].personName+"_"+date.getMilliseconds()+"_"+date.getSeconds()+"_"+Math.floor(Math.random() * 10000000000).toString(16)+"_Image.png"
         found = true    
         name = user.faces[i].personName
         const resultS3Image = await S3.putObject({

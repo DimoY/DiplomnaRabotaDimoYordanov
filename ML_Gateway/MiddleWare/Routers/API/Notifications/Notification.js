@@ -14,12 +14,13 @@ class Notification{
             username : username
         })
         let img = req.body["S3ImageKey"]
-
+        
+        const camera = user.cameras.filter((e)=>{return e._id == req.body["camera-id"]})[0];
         user.notifications.push({
-            title:String(this.notificationInfo["title"]+person+" on camera "+req.body["camera-id"]),
+            title:String(this.notificationInfo["title"]+person+" on camera "+camera["name"]),
             description:String(this.notificationInfo["description"]+person),
             notificationType:String(this.notificationLevel),
-            S3ImgKey:img
+            S3ImgKey:img.replace(" ","+")
         })
 
         user = await userModel.updateOne({

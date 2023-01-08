@@ -24,6 +24,6 @@ router.get("/id/",AuthMiddleWare,async function (req,res,next) {
     let user = await userModel.findOne({
         username:req.username
     })
-    res.json({ "cameras":user.cameras.filter((e)=>{return e._id = req.body["id"]}) });
+    res.json({ "cameras":user.cameras.filter((e)=>{return e._id == req.body["id"]}) });
 })
 module.exports = router;
