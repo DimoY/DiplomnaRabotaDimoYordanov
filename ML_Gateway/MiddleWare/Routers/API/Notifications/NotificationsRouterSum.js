@@ -8,9 +8,15 @@ let faceRecognised = new Notification("High",{
     "description":"face was found of person named: "
 })
 
+let crashRecognised = new Notification("High",{
+    "title":"A crash happened",
+    "description":"A crash happened"
+})
+
 let notificationsGetRouter = new NotificationsGet()
 
 router.use("/-private-FaceRecognised-Notification",faceRecognised.viewFactory())
+router.use("/-private-CarCrashing-Notification",faceRecognised.viewFactory())
 router.use("/",notificationsGetRouter.viewFactory())
 
 module.exports = router;

@@ -16,7 +16,6 @@ class Notification{
     }
 
 
-
     viewFactory(){
         var router = express.Router();
         let viewGetFunction = this._viewGet.bind(this)

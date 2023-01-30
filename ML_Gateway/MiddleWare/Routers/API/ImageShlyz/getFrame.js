@@ -7,6 +7,7 @@ const userModel = require('../../../../model/model/User/user');
 const AWS = require("aws-sdk");
 const { default: axios, AxiosError } = require("axios");
 const { username } = require("../../../../model/schema/User/user");
+const camera = require("../../../../model/schema/Camera/camera");
 const S3 = new AWS.S3()
 
 MapObj = new Map()
@@ -16,11 +17,32 @@ router.post('/', async function (req, res, next) {
         Bucket: "diplomna-rabota",
         Key: req.body["KEY"]
     }).promise()
-    imageSharpObject = sharp(resultS3Image["Body"])
-    image = imageSharpObject.raw().toBuffer()
+    let imageSharpObject = sharp(resultS3Image["Body"])
+    let image = imageSharpObject.raw().toBuffer()
     let user = await userModel.findOne({
         "cameras._id": req.body["camera-id"]
     })
+    let camera = user.cameras.filter((e)=>{return e._id == req.body["camera-id"]})
+    console.log(camera,camera[0]["cameraType"])
+    if(camera[0]["cameraType"] == "in car"){
+        console.log("123")
+        const img_buff = await imageSharpObject.png().resize(128,128).toBuffer();
+        let data = await axios({
+            method: "post",
+            url: "http://localhost:3000/api/crash/",
+            data: { "img":img_buff.toJSON()["data"]}
+        })
+        console.log(data["data"])
+        if(data["data"]["result"] == true){
+            
+            notificationResp  = await axios({
+                method:"post",
+                url:"http://localhost:3000/api/notifications/-private-CarCrashing-Notification/",
+                data:{"username":user.username,"item":"","S3ImageKey":"","camera-id":req.body["camera-id"]},
+                headers:{}
+            })
+        }
+    }
     console.log(user["username"])
     image = await image
     let metadata = await imageSharpObject.metadata()
@@ -59,7 +81,7 @@ router.post('/', async function (req, res, next) {
             notificationResp  = await axios({
                 method:"post",
                 url:"http://localhost:3000/api/notifications/-private-FaceRecognised-Notification/",
-                data:{"username":user.username,"person":response["data"]["person"],"S3ImageKey":response["data"]["S3Imagekey"],"camera-id":req.body["camera-id"]},
+                data:{"username":user.username,"item":response["data"]["person"],"S3ImageKey":response["data"]["S3Imagekey"],"camera-id":req.body["camera-id"]},
                 headers:{}
             })
         }

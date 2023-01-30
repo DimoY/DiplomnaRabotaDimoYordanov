@@ -9,7 +9,7 @@ class Notification{
 
     async _viewAdd(req,res,next){
         const username = req.body["username"]
-        const person = req.body["person"]
+        const item = req.body["item"]
         let user = await userModel.findOne({
             username : username
         })

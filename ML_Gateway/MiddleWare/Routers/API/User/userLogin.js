@@ -11,6 +11,7 @@ router.post('/', async function (req, res, next) {
         username:req.body.username
     })
     if(user){
+        
         let password = req.body.password
         if(!bcrypt.compareSync( password,user.password)){
             res.json({status:"error",user:false})
