@@ -22,7 +22,7 @@ class RegisterForm extends React.Component{
             "username":this.state["username"],
             "password":this.state["password"]
         })
-        let res = fetch("http://localhost:3000/api/user/register/",
+        let res = fetch("http://localhost:3333/api/user/register/",
             {
                 method:"post",
                 headers: {

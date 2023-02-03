@@ -21,7 +21,7 @@ class LoginForm extends React.Component{
             "username":this.state["username"],
             "password":this.state["password"]
         })
-        let res = fetch("http://localhost:3000/api/user/login/",
+        let res = fetch("http://localhost:3333/api/user/login/",
             {
                 method:"post",
                 headers: {

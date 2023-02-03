@@ -8,7 +8,7 @@ import CameraWidget from "./CameraWidget"
 class CameraWindow extends React.Component {
     async getCameras(token: String) {
 
-        const req = await fetch("http://localhost:3000/api/camera/get/",
+        const req = await fetch("http://localhost:3333/api/camera/get/",
             {
                 headers: {
                     "x-access-token": token
@@ -19,7 +19,7 @@ class CameraWindow extends React.Component {
         let list = []
         for (const camera of cameras["cameras"]) {
             list.push((
-                <CameraWidget key={camera._id} cameraName={camera.name} ip={camera.ip} dateLastStreamd={new Date(camera.updatedAt)} />
+                <CameraWidget key={camera._id} cameraName={camera.name} ip={camera.ip} id={camera._id} dateLastStreamd={new Date(camera.updatedAt)} />
             ))
         }
         this.setState({
@@ -74,7 +74,7 @@ class CameraWindow extends React.Component {
                 "cameraType":this.state["form-cameraType"]
             
         }))
-            const req = await fetch("http://localhost:3000/api/camera/add/",
+            const req = await fetch("http://localhost:3333/api/camera/add/",
                     {
                         method:"post",
                         headers: {

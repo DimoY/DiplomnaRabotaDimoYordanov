@@ -21,7 +21,7 @@ class NotificationGroup extends React.Component{
             this.state.list = [(<h1>You are not logged in</h1>)]
         }else{
             async function getNotifications() {
-                let res = await fetch("http://localhost:3000/api/notifications/",
+                let res = await fetch("http://localhost:3333/api/notifications/",
                 {
                     method:"get",
                     headers: {

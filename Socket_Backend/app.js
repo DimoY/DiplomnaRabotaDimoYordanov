@@ -56,7 +56,7 @@ app.ws('/:cameraid', function (ws, req) {
     image.toFile(req.params["cameraid"] + "_Image.png")
     let data = await image.toBuffer()
     let headers = { 'Content-Type': 'application/json;charset=utf-8' }
-    let imageSizeSent = 25000
+    let imageSizeSent = 10000
     for (let i = 0; i < data.length / imageSizeSent; i++) {
       try {
         let response = await axios({

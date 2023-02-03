@@ -12,7 +12,8 @@ class CameraWindow extends React.Component {
         this.state = {
             "name": props.cameraName,
             "ip": props.ip,
-            "date": props.dateLastStreamd
+            "date": props.dateLastStreamd,
+            "id":props.id
         };
         console.log(this.state["name"])
     }
@@ -34,6 +35,9 @@ class CameraWindow extends React.Component {
                     </Typography>
                     <Typography level="body2" sx={{ mt: 0.5, mb: 2 }}>
                         {this.state["ip"].join(":")}
+                    </Typography>
+                    <Typography level="body2" sx={{ mt: 0.5, mb: 2 }}>
+                        {this.state["id"]}
                     </Typography>
                     <Divider />
                     <CardOverflow
