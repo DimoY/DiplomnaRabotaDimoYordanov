@@ -6,7 +6,8 @@ require("dotenv").config({ path: "./config.env" });
 
 const AppUseDefines = require('./routes/app_use_defines');
 
-const ImageShlyz = require("./MiddleWare/ImageShlyz/getFrame")
+const ImageShlyz = require("./MiddleWare/ImageShlyz/getFrame");
+const { cameras } = require('./model/schema/User/user');
 
 const app = express();
 var expressWs = require('express-ws')(app);
@@ -15,6 +16,7 @@ var expressWs = require('express-ws')(app);
     
 AppUseDefines(app)
 
+let camera_map = {}
 
 let setWebSocket = (app)=>{
     app.ws('/camera-input/:cameraid/', function(ws, req) {
@@ -44,6 +46,7 @@ let setWebSocket = (app)=>{
                   channels: chanes,
                 }
               })
+              camera_map[req.params["cameraid"]] = image
               await ImageShlyz(req.params["cameraid"],image)
               var date2 = new Date();
               var diff = date2 - date1; //milliseconds interval
@@ -54,6 +57,17 @@ let setWebSocket = (app)=>{
         });
         console.log("connect")
     });
+
+    app.ws('/stream/:cameraid/', async function(ws, req) {
+      ws.on('message', async function(msg) {
+        if(camera_map[req.params["cameraid"]]!=undefined){
+          let buffer = await camera_map[req.params["cameraid"]].jpeg().toBuffer()
+          ws.send(JSON.stringify(buffer.toJSON()["data"]))
+          await new Promise(r => setTimeout(r, 500));
+        }
+      })
+      console.log("connect")
+  });
 }
 
 setWebSocket(app)
