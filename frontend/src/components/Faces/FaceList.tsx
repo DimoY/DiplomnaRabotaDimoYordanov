@@ -10,7 +10,7 @@ import { Button, Stack } from "@mui/joy";
 class FaceWindow extends React.Component {
     async getFaces(token:String){
             
-        const req = await fetch("http://localhost:3000/api/face/get/",
+        const req = await fetch("http://localhost:3333/api/face/get/",
         {
             headers:{
                 "x-access-token":token
@@ -74,7 +74,7 @@ class FaceWindow extends React.Component {
             
         })
         console.log(body)
-            const req = await fetch("http://localhost:3000/api/face/add/browser/",
+            const req = await fetch("http://localhost:3333/api/face/add/browser/",
                     {
                         method:"post",
                         mode:"cors",

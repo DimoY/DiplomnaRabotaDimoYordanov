@@ -9,7 +9,6 @@ class Notification{
 
     async _viewAdd(req,res,next){
         const username = req.body["username"]
-        const item = req.body["item"]
         let user = await userModel.findOne({
             username : username
         })
@@ -18,7 +17,7 @@ class Notification{
         const camera = user.cameras.filter((e)=>{return e._id == req.body["camera-id"]})[0];
 
         user.notifications.push({
-            title:String(this.notificationInfo["title"].replace("<person>",req.body["person"]).replace("<camera>",camera["name"])),
+            title:String(this.notificationInfo["title"].replace("<person>",req.body["item"]).replace("<camera>",camera["name"])),
             notificationType:String(this.notificationLevel),
             S3ImgKey:img.replace(" ","+")
         })
