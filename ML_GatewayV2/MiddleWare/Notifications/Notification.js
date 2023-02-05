@@ -19,7 +19,8 @@ class Notification{
         user.notifications.push({
             title:String(this.notificationInfo["title"].replace("<person>",req.body["item"]).replace("<camera>",camera["name"])),
             notificationType:String(this.notificationLevel),
-            S3ImgKey:img.replace(" ","+")
+            S3ImgKey:img.replace(" ","+"),
+            FullS3Img:req.body["FullS3Image"]
         })
 
         user = await userModel.updateOne({
