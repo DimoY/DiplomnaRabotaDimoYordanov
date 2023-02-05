@@ -58,16 +58,7 @@ let setWebSocket = (app)=>{
         console.log("connect")
     });
 
-    app.ws('/stream/:cameraid/', async function(ws, req) {
-      ws.on('message', async function(msg) {
-        if(camera_map[req.params["cameraid"]]!=undefined){
-          let buffer = await camera_map[req.params["cameraid"]].jpeg().toBuffer()
-          ws.send(JSON.stringify(buffer.toJSON()["data"]))
-          await new Promise(r => setTimeout(r, 500));
-        }
-      })
-      console.log("connect")
-  });
+    
 }
 
 setWebSocket(app)
