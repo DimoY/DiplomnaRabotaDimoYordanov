@@ -53,7 +53,7 @@ router.post('/browser/', AuthMiddleWare, async function (req, res, next) {
         Key:key_value
     }).promise()
     console.log(resultS3Image)
-    const data = PredictBasedOnPath(imageBuffer.resize(32,32))
+    const data = PredictBasedOnPath(imageBuffer.resize(112,112))
    
     flag = false
     let id = 0
