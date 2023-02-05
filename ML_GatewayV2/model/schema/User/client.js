@@ -1,4 +1,5 @@
 module.exports = {
+	faceSensitivity:Number,
 	id: String,
 	clientId: String,
 	clientSecret: String,
