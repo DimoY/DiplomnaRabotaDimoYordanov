@@ -5,6 +5,7 @@ import React from "react";
 import FaceWidget from "./FaceWidget"
 import FaceAddForm from "./FaceAddForm";
 import { Button, Stack } from "@mui/joy";
+import FaceSensitivitySidebar from "./SensitivitySidebar"
 //<CameraWidget cameraName = {"Mr camington"} ip = {[255,255,255,255]} dateLastStreamd = {new Date()}/>
 
 class FaceWindow extends React.Component {
@@ -96,6 +97,9 @@ class FaceWindow extends React.Component {
     render() {
         return (
                 <div>
+
+                    <FaceSensitivitySidebar/>
+                    <br/>
                     <FaceAddForm setName = {
                         ((e)=>{this.setState({
                         "name":e.target.value
