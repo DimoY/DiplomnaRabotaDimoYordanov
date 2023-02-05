@@ -15,7 +15,7 @@ class Notification{
         let img = req.body["S3ImageKey"]
         
         const camera = user.cameras.filter((e)=>{return e._id == req.body["camera-id"]})[0];
-
+        let date = new Date()
         user.notifications.push({
             title:String(this.notificationInfo["title"].replace("<person>",req.body["item"]).replace("<camera>",camera["name"])),
             notificationType:String(this.notificationLevel),

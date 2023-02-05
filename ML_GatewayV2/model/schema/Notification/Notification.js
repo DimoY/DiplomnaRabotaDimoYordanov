@@ -5,5 +5,6 @@ module.exports = {
     S3ImgKey:String,
     FullS3Img:String,
     start:Number,
-    end:Number
+    end:Number,
+    hash:Number
 };
