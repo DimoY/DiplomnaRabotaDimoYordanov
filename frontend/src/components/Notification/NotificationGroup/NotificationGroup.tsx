@@ -40,7 +40,11 @@ class NotificationGroup extends React.Component{
                         item.push(
                             <ListItem key = {notificatiom}>
                                 <ListItemButton>
-                                    <NotificationLine  message = {notification.title} importanceLevel = {Importance.Informative} S3ImgKey={notification["S3ImgKey"]}/>
+                                    <NotificationLine start = {(new Date(notification.start)).toISOString()}
+                                     end = {(new Date(notification.start+notification.times_seen)).toISOString()} 
+                                     message = {notification.title} 
+                                     importanceLevel = {Importance.Informative} 
+                                     S3ImgKey={notification["S3ImgKey"]}/>
                                 </ListItemButton>
                             </ListItem>
                         )
