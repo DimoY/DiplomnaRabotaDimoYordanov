@@ -84,7 +84,6 @@ class TopMenuBar extends React.Component{
                                     24
                                 </Chip>
                             </Tab>
-                            <Tab>LiveFeed</Tab>
                             <Tab>Faces</Tab>
                             <Tab>Cameras</Tab>
                         </TabList>
@@ -114,12 +113,9 @@ class TopMenuBar extends React.Component{
                                 {this.state.notificationWidget}
                             </TabPanel>
                             <TabPanel value={2}>
-                                {this.state.liveWidget}
-                            </TabPanel>
-                            <TabPanel value={3}>
                                 {this.state.faceWidget}
                             </TabPanel>
-                            <TabPanel value={4}>
+                            <TabPanel value={3}>
                                 {this.state.cameraWidget}
                             </TabPanel>
                         </Box>
