@@ -80,7 +80,7 @@ async function calculateFaceInfo(imageS3,user,data){
         }
     }
     let key,found,name
-    if(min>150000){
+    if(min>user.sensitivity){
         //key = user._id.toString()+"_unrecognised_"+new Date().toString()+"_"+Math.floor(Math.random() * 10000000000).toString(16)+"_Image.png"
         key = ""
         found  = false
