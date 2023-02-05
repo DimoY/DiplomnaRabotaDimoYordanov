@@ -29,12 +29,12 @@ async function GetCrash(sharp_image) {
 
 async function GetFaces(sharp_image,metadata) {
     
-    let image = await sharp_image.clone().resize(metadata.width/4,metadata.height/4).raw().toBuffer()
+    let image = await sharp_image.clone().resize(Math.round(metadata.width/4),Math.round(metadata.height/4)).raw().toBuffer()
 
     let data = await axios({
         method: "post",
         url: "http://localhost:5000/api/faceRecognition/",
-        data: { "data": image, "width": metadata.width/4, "height": metadata.height/4 }
+        data: { "data": image, "width": Math.round(metadata.width/4), "height": Math.round(metadata.height/4) }
     })
     return data
 
@@ -61,15 +61,17 @@ async function calculateFaceInfo(imageS3,user,data){
             let val = e.face.map(
                 (e)=>{
                     let sum = 0;
-                    for(let i = 0;i<1024;i++){
+                    for(let i = 0;i<e.face.length;i++){
                         sum+=Math.abs(e.face[i]-data[0][i])
                     }
                     return sum
                 }
             )
+            console.log(val)
             return Math.min(...val)
         }
     )
+    console.log(faces)
     let min = Math.min(...faces)
     let i = 0
     for(i in faces){
@@ -78,7 +80,7 @@ async function calculateFaceInfo(imageS3,user,data){
         }
     }
     let key,found,name
-    if(min>200){
+    if(min>150000){
         //key = user._id.toString()+"_unrecognised_"+new Date().toString()+"_"+Math.floor(Math.random() * 10000000000).toString(16)+"_Image.png"
         key = ""
         found  = false
@@ -100,7 +102,8 @@ async function calculateFaceInfo(imageS3,user,data){
 
 async function ImageShlyz(camera_id,imageSharpObject) {
 
-
+    let imageWasSaved = false
+    let key = ""
     let user = await userModel.findOne({
         "cameras._id": camera_id
     })
@@ -111,19 +114,30 @@ async function ImageShlyz(camera_id,imageSharpObject) {
     if(camera[0]["cameraType"] == "in car"){
         
         let data = await GetCrash(imageSharpObject)
-        
-        if(data[0]>data[1]){
+        console.log(data)
+        console.log(data[0])
+        if(data[0][0]>data[0][1]+0.2){
+            console.log("123")
+            let s3Store = imageSharpObject.jpeg().toBuffer()
+            let date = new Date()
+            key = "full_img_"+camera_id+"_"+date.getMilliseconds()+"_"+date.getSeconds()+".jpg"
+            const resultS3Image = await S3.putObject({
+                Body: await s3Store,
+                Bucket: "diplomna-rabota",
+                Key: key
+            }).promise()
+            imageWasSaved = true
+            console.log(resultS3Image)
             notificationResp  = await axios({
                 method:"post",
                 url:"http://localhost:3333/api/notifications/-private-CarCrashing-Notification/",
-                data:{"username":user.username,"item":"","camera-id":camera_id},
+                data:{"username":user.username,"item":"","camera-id":camera_id,"S3ImageKey":key,"camera-id":camera_id,"FullS3Image":key},
                 headers:{}
             })
         }
     }
     let metadata = await imageSharpObject .metadata()
     let data = await GetFaces(imageSharpObject,metadata)
-
     await data["data"]["res"].forEach(async function(element ) {
 
         element["MinY"]*=4
@@ -134,7 +148,7 @@ async function ImageShlyz(camera_id,imageSharpObject) {
         
         let face_croped = imageSharpObject.extract({left: element["MinX"], top: element["MinY"], width: element["Width"], height: element["Height"]})
         face_croped.png().toFile("123.png")
-        image = face_croped.resize(32,32)
+        image = face_croped.resize(112,112)
 
 
         encoding = await GetEncoding(image)
@@ -143,11 +157,21 @@ async function ImageShlyz(camera_id,imageSharpObject) {
         console.log(response)
         //console.log(response["data"])
         if(response["found"] == true){
+            if(imageWasSaved!=true){
+                let s3Store = imageSharpObject.jpeg().toBuffer()
+                let date = new Date()
+                key = "full_img_"+camera_id+"_"+date.getMilliseconds()+"_"+date.getSeconds()+".jpg"
+                const resultS3Image = await S3.putObject({
+                    Body: await s3Store,
+                    Bucket: "diplomna-rabota",
+                    Key: key
+                }).promise()
+            }
             
             notificationResp  = await axios({
                 method:"post",
                 url:"http://localhost:3333/api/notifications/-private-FaceRecognised-Notification/",
-                data:{"username":user.username,"item":response["person"],"S3ImageKey":response["S3Imagekey"],"camera-id":camera_id},
+                data:{"username":user.username,"item":response["person"],"S3ImageKey":response["S3Imagekey"],"camera-id":camera_id,"FullS3Image":key},
                 headers:{}
             })
         }
