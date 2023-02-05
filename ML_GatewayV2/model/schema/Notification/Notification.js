@@ -6,5 +6,6 @@ module.exports = {
     FullS3Img:String,
     start:Number,
     end:Number,
-    hash:Number
+    times_seen:Number,
+    hash:String
 };
