@@ -69,7 +69,7 @@ class CameraAddForm extends React.Component {
                             '--Radio-action-radius': '8px',
                         }}
                     >
-                        {['inside', 'in car'].map((item) => (
+                        {['outside', 'in car'].map((item) => (
                             <Radio
                                 key={item}
                                 color="neutral"

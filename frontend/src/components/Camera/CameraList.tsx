@@ -32,7 +32,7 @@ class CameraWindow extends React.Component {
             "list": [],
             "form-name":"",
             "form-ip":[0,0,0,0],
-            "form-cameraType":"inside"
+            "form-cameraType":"outside"
         };
         
         let data = window.localStorage.getItem("USER_KEY")
