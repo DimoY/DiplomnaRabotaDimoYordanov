@@ -7,12 +7,13 @@ require("dotenv").config({ path: "./config.env" });
 const AppUseDefines = require('./routes/app_use_defines');
 
 const ImageShlyz = require("./MiddleWare/ImageShlyz/getFrame");
-const { cameras } = require('./model/schema/User/user');
+const userModel = require('./model/model/User/user');
+const bcrypt = require("bcryptjs");
 
 const app = express();
 var expressWs = require('express-ws')(app);
     
-
+const jwt = require("jsonwebtoken")
     
 AppUseDefines(app)
 
@@ -57,6 +58,42 @@ let setWebSocket = (app)=>{
         });
         console.log("connect")
     });
+
+    app.ws('/notifications-user/', function(ws, req) {
+      ws.on('message', async function(msg) {
+        const token = msg
+        console.log(token)
+        if(token == undefined){
+            console.log({"status":"error","reason":"There is no token, weird ..."})
+            return;
+        }
+        let decoded;
+        try {
+            decoded = jwt.verify(token,process.env.JWTSecret)
+        } catch (error) {
+            console.log({status:"error", reason:" jwt Problem",error:error.toString()})
+            return
+        }
+        if(decoded == undefined){
+            console.log({"status":"error","reason":"You are not coorect"})
+            return
+        }
+        const user = await userModel.findOne({
+            username:decoded.username
+        })
+        if(!user){
+            console.log({"status":"error","reason":"Username is not correct"})
+            return;
+        }
+        let password = decoded.password
+        if(!bcrypt.compareSync( password,user.password)){
+            console.log({status:"error", reason:"Password is not correct"})
+            return;
+        }
+        ws.send(JSON.stringify(user.notifications))
+      });
+      console.log("connect")
+  });
 
     
 }

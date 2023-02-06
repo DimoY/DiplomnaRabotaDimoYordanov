@@ -1,4 +1,3 @@
-const { IoTSecureTunneling } = require("aws-sdk");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken")
 const userModel = require('../../model/model/User/user');
