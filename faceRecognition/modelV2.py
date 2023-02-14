@@ -131,14 +131,10 @@ def createModel():
     maxpool2D_1 = tf.keras.layers.MaxPool2D(3,strides=2)(conv2D_1)
     normalization_1 = tf.keras.layers.Normalization()(maxpool2D_1)
  
-    conv2D_2 = tf.keras.layers.Conv2D(64,1)(normalization_1)
-    conv2D_3 = tf.keras.layers.Conv2D(64,3)(conv2D_2)
+    conv2D_2 = tf.keras.layers.Conv2D(128,1)(normalization_1)
+    conv2D_3 = tf.keras.layers.Conv2D(128,3)(conv2D_2)
     normalization_2 = tf.keras.layers.Normalization()(conv2D_3)
     maxpool2D_2 = tf.keras.layers.MaxPool2D(3,strides=2)(normalization_2)
- 
-    # conv2D_3 = tf.keras.layers.Conv2D(192,1)(maxpool2D_2)
-    # conv2D_4 = tf.keras.layers.Conv2D(192,3)(conv2D_3)
-    # maxpool2D_3 = tf.keras.layers.MaxPool2D(3,strides=2)(conv2D_4)
  
     flt = tf.keras.layers.Flatten()(maxpool2D_2)
  
@@ -158,11 +154,6 @@ Encoder.call(res).shape
  
 # %%
 class DistanceLayer(tf.keras.layers.Layer):
-    """
-    This layer is responsible for computing the distance between the anchor
-    embedding and the positive embedding, and the anchor embedding and the
-    negative embedding.
-    """
  
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -190,15 +181,7 @@ siamese_network = tf.keras.Model(
  
 # %%
 class SiameseModel(tf.keras.Model):
-    """The Siamese Network model with a custom training and testing loops.
- 
-    Computes the triplet loss using the three embeddings produced by the
-    Siamese Network.
- 
-    The triplet loss is defined as:
-       L(A, P, N) = max(‖f(A) - f(P)‖² - ‖f(A) - f(N)‖² + margin, 0)
-    """
- 
+
     def __init__(self, siamese_network, margin=0.5):
         super().__init__()
         self.siamese_network = siamese_network
@@ -209,41 +192,28 @@ class SiameseModel(tf.keras.Model):
         return self.siamese_network(inputs)
  
     def train_step(self, data):
-        # GradientTape is a context manager that records every operation that
-        # you do inside. We are using it here to compute the loss so we can get
-        # the gradients and apply them using the optimizer specified in
-        # `compile()`.
         with tf.GradientTape() as tape:
             loss = self._compute_loss(data)
  
-        # Storing the gradients of the loss function with respect to the
-        # weights/parameters.
         gradients = tape.gradient(loss, self.siamese_network.trainable_weights)
  
-        # Applying the gradients on the model using the specified optimizer
         self.optimizer.apply_gradients(
             zip(gradients, self.siamese_network.trainable_weights)
         )
  
-        # Let's update and return the training loss metric.
         self.loss_tracker.update_state(loss)
         return {"loss": self.loss_tracker.result()}
  
     def test_step(self, data):
         loss = self._compute_loss(data)
  
-        # Let's update and return the loss metric.
         self.loss_tracker.update_state(loss)
         return {"loss": self.loss_tracker.result()}
  
     def _compute_loss(self, data):
-        # The output of the network is a tuple containing the distances
-        # between the anchor and the positive example, and the anchor and
-        # the negative example.
-        ap_distance, an_distance = self.siamese_network(data)
  
-        # Computing the Triplet Loss by subtracting both distances and
-        # making sure we don't get a negative value.
+        ap_distance, an_distance = self.siamese_network(data)
+
         loss = ap_distance - an_distance
         loss = tf.maximum(loss + self.margin, 0.0)
         return loss
