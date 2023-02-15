@@ -1,17 +1,10 @@
-const sharp = require("sharp")
-var express = require('express');
-var router = express.Router();
+const sharp = require("sharp");
 
 const userModel = require('../../model/model/User/user');
 
 const AWS = require("aws-sdk");
-const { default: axios, AxiosError } = require("axios");
-const { username } = require("../../model/schema/User/user");
-const camera = require("../../model/schema/Camera/camera");
+const { default: axios } = require("axios");
 const S3 = new AWS.S3()
-
-MapObj = new Map()
-
 
 async function GetCrash(sharp_image) {
     let data = await sharp_image.clone().resize(128,128).raw().toBuffer()
@@ -54,34 +47,38 @@ async function GetEncoding(sharp_image) {
     return response["data"]["predictions"]
 
 }
-
-async function calculateFaceInfo(imageS3,user,data){
-    let faces = user.faces.map(
-        (e)=>{
+function faceListMinDifference(user, data) {
+    return user.faces.map(
+        (e) => {
             let val = e.face.map(
-                (e)=>{
+                (e) => {
                     let sum = 0;
-                    for(let i = 0;i<e.face.length;i++){
-                        sum+=Math.abs(e.face[i]-data[0][i])
+                    for (let i = 0; i < e.face.length; i++) {
+                        sum += Math.abs(e.face[i] - data[0][i]);
                     }
-                    return sum
+                    return sum;
                 }
-            )
-            console.log(val)
-            return Math.min(...val)
+            );
+            return Math.min(...val);
         }
-    )
-    console.log(faces)
-    let min = Math.min(...faces)
-    let i = 0
-    for(i in faces){
-        if(faces[i] == min){
-            break
+    );
+}
+function getIndexMostSimilarFace(faces) {
+    let min = Math.min(...faces);
+    let i = 0;
+    for (i in faces) {
+        if (faces[i] == min) {
+            break;
         }
     }
+    return { min, i };
+}
+
+async function calculateFaceInfo(imageS3,user,data){
+    let faces = faceListMinDifference(user, data)
+    let { min, i } = getIndexMostSimilarFace(faces);
     let key,found,name
     if(min>user.sensitivity){
-        //key = user._id.toString()+"_unrecognised_"+new Date().toString()+"_"+Math.floor(Math.random() * 10000000000).toString(16)+"_Image.png"
         key = ""
         found  = false
         name = "unrecognised"
@@ -90,15 +87,14 @@ async function calculateFaceInfo(imageS3,user,data){
         key = user._id.toString()+"_"+user.faces[i].personName+"_"+date.getMilliseconds()+"_"+date.getSeconds()+"_"+Math.floor(Math.random() * 10000000000).toString(16)+"_Image.png"
         found = true    
         name = user.faces[i].personName
-        const resultS3Image = await S3.putObject({
-            Body: await imageS3,
-            Bucket: "diplomna-rabota",
-            Key: key
-        }).promise()
-        console.log(resultS3Image)
+        await SaveToS3(key,imageS3)
     }
     return {"found": found,"diff":min,"person":name,"status":"ok" ,"S3Imagekey":key}
 }
+
+
+
+
 
 function CheckIfCarCrashed(data) {
     return data[0][0]>data[0][1]+0.2
@@ -106,7 +102,7 @@ function CheckIfCarCrashed(data) {
 
 async function SaveToS3(key,image){
     const resultS3Image = await S3.putObject({
-        Body: await s3Store,
+        Body: await image,
         Bucket: "diplomna-rabota",
         Key: key
     }).promise()
