@@ -49,8 +49,6 @@ let setWebSocket = (app)=>{
                   }
                 }
                 const image = sharp(Uint8Array.from(msg.slice(offset,offset+ width * height * chanes)), {
-                  // because the input does not contain its dimensions or how many channels it has
-                  // we need to specify it in the constructor options
                   raw: {
                     width: width,
                     height: height,
@@ -60,7 +58,6 @@ let setWebSocket = (app)=>{
                 ImageShlyz(req.params["cameraid"],image)
               }
         });
-        console.log("connect")
     });
 
     
