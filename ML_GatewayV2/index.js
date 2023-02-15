@@ -14,48 +14,51 @@ const {SHA256} = require("crypto-js")
 const app = express();
 var expressWs = require('express-ws')(app);
     
-const jwt = require("jsonwebtoken")
     
 AppUseDefines(app)
 
-let camera_map = {}
 
 let setWebSocket = (app)=>{
+
+    function DecodeSizes(msg) {
+      frames = (new DataView(msg.buffer, 5, 4)).getInt32(littleEndian = false)
+      width = (new DataView(msg.buffer, 9, 4)).getInt32(littleEndian = false)
+      height = (new DataView(msg.buffer, 13, 4)).getInt32(littleEndian = false)
+      return {
+        frames:frames,
+        width:width,
+        height:height
+      }
+    }
+
     app.ws('/camera-input/:cameraid/', function(ws, req) {
         ws.on('message', async function(msg) {
 
-            var date1 = new Date();
             if (msg.slice(0, 5).toString() != "array") {
                 ws.send("Only array type supported");
               }
-              frames = (new DataView(msg.buffer, 5, 4)).getInt32(littleEndian = false)
-              width = (new DataView(msg.buffer, 9, 4)).getInt32(littleEndian = false)
-              height = (new DataView(msg.buffer, 13, 4)).getInt32(littleEndian = false)
+              const {frames:frames,width:width,height:height} = DecodeSizes(msg)
               chanes = 3
-              for (let index = 0; index < height; index++) {
-                for (let index2 = 0; index2 < width * chanes; index2 += chanes) {
-                  let k = msg[index * width * chanes + index2]
-                  msg[index * width * chanes + index2] = msg[index * width * chanes + index2 + 1]
-                  msg[index * width * chanes + index2 + 1] = k
+              for (let frame=0;frame<frames;frame++){
+                const offset = frame*width*height*chanes
+                for (let index = 0; index < height; index++) {
+                  for (let index2 = 0; index2 < width * chanes; index2 += chanes) {
+                    let k = msg[offset+ index * width * chanes + index2]
+                    msg[offset+ index * width * chanes + index2] = msg[offset+index * width * chanes + index2 + 1]
+                    msg[offset+ index * width * chanes + index2 + 1] = k
+                  }
                 }
+                const image = sharp(Uint8Array.from(msg.slice(offset,offset+ width * height * chanes)), {
+                  // because the input does not contain its dimensions or how many channels it has
+                  // we need to specify it in the constructor options
+                  raw: {
+                    width: width,
+                    height: height,
+                    channels: chanes,
+                  }
+                })
+                ImageShlyz(req.params["cameraid"],image)
               }
-              const image = sharp(Uint8Array.from(msg.slice(0, width * height * chanes)), {
-                // because the input does not contain its dimensions or how many channels it has
-                // we need to specify it in the constructor options
-                raw: {
-                  width: width,
-                  height: height,
-                  channels: chanes,
-                }
-              })
-              camera_map[req.params["cameraid"]] = image
-              await ImageShlyz(req.params["cameraid"],image)
-              var date2 = new Date();
-              var diff = date2 - date1; //milliseconds interval
-              console.log(diff)
-              //let data = image.toBuffer()
-              //console.log(req.params["cameraid"] + "_Image.png")
-              //image.toFile(req.params["cameraid"] + "_Image.png")
         });
         console.log("connect")
     });
