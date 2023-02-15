@@ -161,21 +161,21 @@ class DistanceLayer(tf.keras.layers.Layer):
     def call(self, anchor, positive, negative):
         ap_distance = tf.reduce_sum(tf.square(anchor - positive), -1)
         an_distance = tf.reduce_sum(tf.square(anchor - negative), -1)
-        return (ap_distance, an_distance)
+        return ap_distance, an_distance
  
  
-anchor_input = tf.keras.layers.Input(name="anchor", shape=target_shape + (3,))
-positive_input = tf.keras.layers.Input(name="positive", shape=target_shape + (3,))
-negative_input = tf.keras.layers.Input(name="negative", shape=target_shape + (3,))
+anchor_input = tf.keras.layers.Input( shape=target_shape + (3,))
+positive_input = tf.keras.layers.Input( shape=target_shape + (3,))
+negative_input = tf.keras.layers.Input( shape=target_shape + (3,))
  
-distances = DistanceLayer()(
+distance_layer_output = DistanceLayer()(
     Encoder(anchor_input),
     Encoder(positive_input),
     Encoder(negative_input),
 )
  
-siamese_network = tf.keras.Model(
-    inputs=[anchor_input, positive_input, negative_input], outputs=distances
+siamese_model = tf.keras.Model(
+    inputs=[anchor_input, positive_input, negative_input], outputs=distance_layer_output
 )
  
  
