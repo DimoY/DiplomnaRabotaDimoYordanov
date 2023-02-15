@@ -100,6 +100,42 @@ async function calculateFaceInfo(imageS3,user,data){
     return {"found": found,"diff":min,"person":name,"status":"ok" ,"S3Imagekey":key}
 }
 
+function CheckIfCarCrashed(data) {
+    return data[0][0]>data[0][1]+0.2
+}
+
+async function SaveToS3(key,image){
+    const resultS3Image = await S3.putObject({
+        Body: await s3Store,
+        Bucket: "diplomna-rabota",
+        Key: key
+    }).promise()
+}
+
+await function SendCrashNotification(user,camera_id,key,camera_id) {
+    notificationResp  = await axios({
+        method:"post",
+        url:"http://localhost:3333/api/notifications/-private-CarCrashing-Notification/",
+        data:{"username":user.username,"item":"","camera-id":camera_id,"S3ImageKey":key,"camera-id":camera_id,"FullS3Image":key},
+        headers:{}
+    })
+}
+
+async function onCarCrash(imageSharpObject, camera_id, user) {
+    let data = await GetCrash(imageSharpObject);
+
+    if (CheckIfCarCrashed(data)) {
+        let s3Store = imageSharpObject.jpeg().toBuffer();
+        let date = new Date();
+        key = "full_img_" + camera_id + "_" + date.getMilliseconds() + "_" + date.getSeconds() + ".jpg";
+        await SaveToS3(key, s3Store);
+        imageWasSaved = true;
+        await SendCrashNotification(user, camera_id, key, camera_id);
+    }
+    return { key, imageWasSaved };
+}
+
+
 async function ImageShlyz(camera_id,imageSharpObject) {
 
     let imageWasSaved = false
@@ -113,28 +149,7 @@ async function ImageShlyz(camera_id,imageSharpObject) {
 
     if(camera[0]["cameraType"] == "in car"){
         
-        let data = await GetCrash(imageSharpObject)
-        console.log(data)
-        console.log(data[0])
-        if(data[0][0]>data[0][1]+0.2){
-            console.log("123")
-            let s3Store = imageSharpObject.jpeg().toBuffer()
-            let date = new Date()
-            key = "full_img_"+camera_id+"_"+date.getMilliseconds()+"_"+date.getSeconds()+".jpg"
-            const resultS3Image = await S3.putObject({
-                Body: await s3Store,
-                Bucket: "diplomna-rabota",
-                Key: key
-            }).promise()
-            imageWasSaved = true
-            console.log(resultS3Image)
-            notificationResp  = await axios({
-                method:"post",
-                url:"http://localhost:3333/api/notifications/-private-CarCrashing-Notification/",
-                data:{"username":user.username,"item":"","camera-id":camera_id,"S3ImageKey":key,"camera-id":camera_id,"FullS3Image":key},
-                headers:{}
-            })
-        }
+        ({ key, imageWasSaved } = await onCarCrash(imageSharpObject, camera_id, user));
     }
     let metadata = await imageSharpObject .metadata()
     let data = await GetFaces(imageSharpObject,metadata)
@@ -179,3 +194,4 @@ async function ImageShlyz(camera_id,imageSharpObject) {
 }
 
 module.exports = ImageShlyz;
+
