@@ -112,7 +112,7 @@ async function SaveToS3(key,image){
     }).promise()
 }
 
-await function SendCrashNotification(user,camera_id,key,camera_id) {
+async function SendCrashNotification(user,camera_id,key,camera_id) {
     notificationResp  = await axios({
         method:"post",
         url:"http://localhost:3333/api/notifications/-private-CarCrashing-Notification/",
@@ -135,6 +135,43 @@ async function onCarCrash(imageSharpObject, camera_id, user) {
     return { key, imageWasSaved };
 }
 
+function extractImage(element, imageSharpObject) {
+    element["MinY"] *= 4;
+    element["MinX"] *= 4;
+    element["Width"] *= 4;
+    element["Height"] *= 4;
+
+
+    let face_croped = imageSharpObject.extract({ left: element["MinX"], top: element["MinY"], width: element["Width"], height: element["Height"] });
+    face_croped.png().toFile("123.png");
+    image = face_croped.resize(112, 112);
+    return image
+}
+
+async function notificationFaceFound(user, response, camera_id, key) {
+    notificationResp = await axios({
+        method: "post",
+        url: "http://localhost:3333/api/notifications/-private-FaceRecognised-Notification/",
+        data: { "username": user.username, "item": response["person"], "S3ImageKey": response["S3Imagekey"], "camera-id": camera_id, "FullS3Image": key },
+        headers: {}
+    });
+}
+
+async function onFaceFound(element, imageSharpObject, user, imageWasSaved, key, camera_id) {
+    image = extractImage(element, imageSharpObject);
+    encoding = await GetEncoding(image);
+    let response = await calculateFaceInfo(image.png().toBuffer(), user, encoding);
+    if (response["found"] == true) {
+        if (imageWasSaved != true) {
+            let s3Store = imageSharpObject.jpeg().toBuffer();
+            let date = new Date();
+            key = "full_img_" + camera_id + "_" + date.getMilliseconds() + "_" + date.getSeconds() + ".jpg";
+            SaveToS3(key, s3Store);
+        }
+
+        await notificationFaceFound(user, response, camera_id, key);
+    }
+}
 
 async function ImageShlyz(camera_id,imageSharpObject) {
 
@@ -154,42 +191,7 @@ async function ImageShlyz(camera_id,imageSharpObject) {
     let metadata = await imageSharpObject .metadata()
     let data = await GetFaces(imageSharpObject,metadata)
     await data["data"]["res"].forEach(async function(element ) {
-
-        element["MinY"]*=4
-        element["MinX"]*=4
-        element["Width"]*=4
-        element["Height"]*=4
-
-        
-        let face_croped = imageSharpObject.extract({left: element["MinX"], top: element["MinY"], width: element["Width"], height: element["Height"]})
-        face_croped.png().toFile("123.png")
-        image = face_croped.resize(112,112)
-
-
-        encoding = await GetEncoding(image)
-
-        let response = await calculateFaceInfo(image.png().toBuffer(),user,encoding)
-        console.log(response)
-        //console.log(response["data"])
-        if(response["found"] == true){
-            if(imageWasSaved!=true){
-                let s3Store = imageSharpObject.jpeg().toBuffer()
-                let date = new Date()
-                key = "full_img_"+camera_id+"_"+date.getMilliseconds()+"_"+date.getSeconds()+".jpg"
-                const resultS3Image = await S3.putObject({
-                    Body: await s3Store,
-                    Bucket: "diplomna-rabota",
-                    Key: key
-                }).promise()
-            }
-            
-            notificationResp  = await axios({
-                method:"post",
-                url:"http://localhost:3333/api/notifications/-private-FaceRecognised-Notification/",
-                data:{"username":user.username,"item":response["person"],"S3ImageKey":response["S3Imagekey"],"camera-id":camera_id,"FullS3Image":key},
-                headers:{}
-            })
-        }
+        await onFaceFound(element, imageSharpObject, user, imageWasSaved, key, camera_id);
     });
 }
 
