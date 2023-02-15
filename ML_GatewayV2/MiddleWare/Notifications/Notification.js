@@ -22,43 +22,15 @@ class Notification{
         const notificationAvailable = user.notifications.filter((e)=>{
             return hashContent == e.hash && e.end==-1
         })
-        console.log(notificationAvailable)
         if(notificationAvailable.length == 0){
-            user.notifications.push({
-                title:String(this.notificationInfo["title"].replace("<person>",req.body["item"]).replace("<camera>",camera["name"])),
-                notificationType:String(this.notificationLevel),
-                S3ImgKey:img.replace(" ","+"),
-                FullS3Img:req.body["FullS3Image"],
-                start:(new Date()).getTime(),
-                end:-1,
-                times_seen:0,
-                hash:hashContent
-            })
+            user = this.addNotification(user, req, camera, img, hashContent);
     
         }else{
             if((new Date()).getTime()-(notificationAvailable[0].start+notificationAvailable[0].times_seen) > 5000){
-                console.log("#######\nTime passed\n##########")
-                for(let i in user.notifications){
-                    if(user.notifications[i].hash == hashContent){
-                        user.notifications[i].end = 0
-                    }
-                }
-                user.notifications.push({
-                    title:String(this.notificationInfo["title"].replace("<person>",req.body["item"]).replace("<camera>",camera["name"])),
-                    notificationType:String(this.notificationLevel),
-                    S3ImgKey:img.replace(" ","+"),
-                    FullS3Img:req.body["FullS3Image"],
-                    start:(new Date()).getTime(),
-                    end:-1,
-                    times_seen:0,
-                    hash:hashContent
-                })
+                user = this.setFunctionEnd(user, hashContent);
+                user = this.addNotification(user, req, camera, img, hashContent)
             }else{
-                for(let i in user.notifications){
-                    if(user.notifications[i].hash == hashContent){
-                        user.notifications[i].times_seen += (new Date()).getTime()-(notificationAvailable[0].start+notificationAvailable[0].times_seen)
-                    }
-                }
+                user = this.addTime(user, hashContent, notificationAvailable);
             }
         }
 
@@ -72,11 +44,46 @@ class Notification{
 
 
 
+    addTime(user, hashContent, notificationAvailable) {
+        for (let i in user.notifications) {
+            if (user.notifications[i].hash == hashContent) {
+                user.notifications[i].times_seen += (new Date()).getTime() - (notificationAvailable[0].start + notificationAvailable[0].times_seen);
+            }
+        }
+        return user
+    }
+
+    addNotification(user, req, camera, img, hashContent) {
+        user.notifications.push({
+            title: String(this.notificationInfo["title"].replace("<person>", req.body["item"]).replace("<camera>", camera["name"])),
+            notificationType: String(this.notificationLevel),
+            S3ImgKey: img.replace(" ", "+"),
+            FullS3Img: req.body["FullS3Image"],
+            start: (new Date()).getTime(),
+            end: -1,
+            times_seen: 0,
+            hash: hashContent
+        });
+        return user
+    }
+
+    setFunctionEnd(user, hashContent) {
+        for (let i in user.notifications) {
+            if (user.notifications[i].hash == hashContent) {
+                user.notifications[i].end = 0;
+            }
+        }
+        return user
+    }
+
     viewFactory(){
         var router = express.Router();
         let viewAddFunction = this._viewAdd.bind(this)
         router.post("/",viewAddFunction)
         return router
     }
+
+    
 }
 module.exports = Notification
+
