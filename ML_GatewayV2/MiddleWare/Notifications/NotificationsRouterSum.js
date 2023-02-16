@@ -11,10 +11,16 @@ let crashRecognised = new Notification("High",{
     "title":"A crash happened on camera <camera>"
 })
 
+let maskPlacement = new Notification("High",{
+    "title":"Mask was not found or not put correctly on <camera>"
+})
+
+
 let notificationsGetRouter = new NotificationsGet()
 
 router.use("/-private-FaceRecognised-Notification",faceRecognised.viewFactory())
 router.use("/-private-CarCrashing-Notification",crashRecognised.viewFactory())
+router.use("/-private-MaskWornIncorectly-Notification",crashRecognised.viewFactory())
 router.use("/",notificationsGetRouter.viewFactory())
 
 module.exports = router;

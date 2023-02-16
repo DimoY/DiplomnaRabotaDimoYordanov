@@ -47,6 +47,21 @@ async function GetEncoding(sharp_image) {
     return response["data"]["predictions"]
 
 }
+
+async function GetMaskInfo(sharp_image) {
+    let data = await sharp_image.clone().resize(64,64).raw().toBuffer()
+    data = { "signature_name": "serving_default", "instances": [data.toJSON()["data"]] }
+    headers = { 'Content-Type': 'application/json;charset=utf-8' }
+    let response = await axios({
+        method: 'post',
+        url: 'http://localhost:8503/v1/models/mask_recognition:predict',
+        data: data,
+        headers: headers
+    })
+    return response["data"]["predictions"]
+
+}
+
 function faceListMinDifference(user, data) {
     return user.faces.map(
         (e) => {
@@ -153,19 +168,35 @@ async function notificationFaceFound(user, response, camera_id, key) {
     });
 }
 
-async function onFaceFound(element, imageSharpObject, user, imageWasSaved, key, camera_id) {
+async function notificationMaskNotFound(user,response, camera_id, key) {
+    notificationResp = await axios({
+        method: "post",
+        url: "http://localhost:3333/api/notifications/-private-FaceRecognised-Notification/",
+        data: { "username": user.username, "item": "", "S3ImageKey": response["S3Imagekey"], "camera-id": camera_id, "FullS3Image": key },
+        headers: {}
+    });
+}
+
+async function onFaceFound(element, imageSharpObject, user, imageWasSaved, key, camera) {
     image = extractImage(element, imageSharpObject);
     encoding = await GetEncoding(image);
     let response = await calculateFaceInfo(image.png().toBuffer(), user, encoding);
-    if (response["found"] == true) {
-        if (imageWasSaved != true) {
-            let s3Store = imageSharpObject.jpeg().toBuffer();
-            let date = new Date();
-            key = "full_img_" + camera_id + "_" + date.getMilliseconds() + "_" + date.getSeconds() + ".jpg";
-            SaveToS3(key, s3Store);
+    if(camera.maskCheck==true && response["diff"]<1000000){
+        let res = await GetMaskInfo(image)
+        console.log(res)
+        if(res[2]>0.9){
+            if (imageWasSaved != true) {
+                let s3Store = imageSharpObject.jpeg().toBuffer();
+                let date = new Date();
+                key = "full_img_" + camera._id + "_" + date.getMilliseconds() + "_" + date.getSeconds() + ".jpg";
+                imageWasSaved=true;
+                SaveToS3(key, s3Store);
+            }
+            notificationMaskNotFound(user,response,camera._id,key)
         }
-
-        await notificationFaceFound(user, response, camera_id, key);
+    }
+    if (camera.faceRecognition==true && response["found"] == true) {
+        await notificationFaceFound(user, response, camera._id, key);
     }
 }
 
@@ -187,7 +218,7 @@ async function ImageShlyz(camera_id,imageSharpObject) {
     let metadata = await imageSharpObject .metadata()
     let data = await GetFaces(imageSharpObject,metadata)
     await data["data"]["res"].forEach(async function(element ) {
-        await onFaceFound(element, imageSharpObject, user, imageWasSaved, key, camera_id);
+        await onFaceFound(element, imageSharpObject, user, imageWasSaved, key, camera);
     });
 }
 

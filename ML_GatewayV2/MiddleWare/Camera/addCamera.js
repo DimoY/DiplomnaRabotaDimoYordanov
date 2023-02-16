@@ -59,7 +59,9 @@ router.post('/', AuthMiddleWare, async function (req, res, next) {
         name:req.body["cameraName"],
         cameraType:req.body["cameraType"],
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        maskCheck:true,
+        faceRecognition:true
     })
     user = await userModel.updateOne({
         username:user.username
