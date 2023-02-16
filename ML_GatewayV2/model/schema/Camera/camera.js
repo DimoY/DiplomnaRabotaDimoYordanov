@@ -3,5 +3,7 @@ module.exports = {
     ip:[Number],
     createdAt: Date,
     cameraType:String,
-    updatedAt: Date
+    updatedAt: Date,
+    faceRecognition:Boolean,
+    maskCheck:Boolean
 };
