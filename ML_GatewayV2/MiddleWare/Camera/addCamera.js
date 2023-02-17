@@ -44,6 +44,14 @@ router.post('/', AuthMiddleWare, async function (req, res, next) {
         res.json({ "reason": "Wrong ip provided","status":"error" });
         return
     }
+    if(req.body["enableFace"] != true && req.body["enableFace"] != false){
+        res.json({ "reason": "Wrong enable face provided","status":"error" });
+        return
+    }
+    if(req.body["enableMask"] != true && req.body["enableMask"] != false){
+        res.json({ "reason": "Wrong enable mask provided","status":"error" });
+        return
+    }
     console.log(req.username,req.password)
     let user = await userModel.findOne({
         username:req.username
@@ -60,8 +68,8 @@ router.post('/', AuthMiddleWare, async function (req, res, next) {
         cameraType:req.body["cameraType"],
         createdAt: new Date(),
         updatedAt: new Date(),
-        maskCheck:true,
-        faceRecognition:true
+        maskCheck:req.body["enableMask"] ,
+        faceRecognition:req.body["enableFace"]
     })
     user = await userModel.updateOne({
         username:user.username
