@@ -1,5 +1,5 @@
 
-import { Radio, RadioGroup, TextField ,Box,Typography} from "@mui/joy";
+import { Radio, RadioGroup, TextField ,Box,Typography, Checkbox} from "@mui/joy";
 import React from "react";
 
 //<CameraWidget cameraName = {"Mr camington"} ip = {[255,255,255,255]} dateLastStreamd = {new Date()}/>
@@ -9,12 +9,18 @@ class CameraAddForm extends React.Component {
         super(props)
         this.state = {
             setInfo: props.setInfo,
-            justify:"outside"
+            justify:"outside",
+            faceRecognition:false,
+            maskRecognition:false
         }
     }
     handleRadio(event:any){
         this.setState({"justify":event.target.value})
         this.state.setInfo({"type":"cameraType","value":event.target.value})
+    }
+    handleCheckbox(type){
+        this.setState({"faceRecognition":!this.state[type]})
+        this.state.setInfo({"type":type,"value":this.state[type]})
     }
     render() {
         return (
@@ -98,6 +104,18 @@ class CameraAddForm extends React.Component {
                         ))}
                     </RadioGroup>
                 </Box>
+                <Checkbox
+                    color="primary"
+                    label="Face recognition"
+                    variant="soft"
+                    onChange={(e) => {handleCheckbox("faceRecognition") }}
+                />
+                <Checkbox
+                    color="primary"
+                    label="Mask Recognition"
+                    variant="soft"
+                    onChange={(e) => { handleCheckbox("maskRecognition")}}
+                />
             </div>
         );
     }

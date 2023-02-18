@@ -32,7 +32,10 @@ class CameraWindow extends React.Component {
             "list": [],
             "form-name":"",
             "form-ip":[0,0,0,0],
-            "form-cameraType":"outside"
+            "form-cameraType":"outside",
+            "form-maskRecognition":false,
+            "form-faceRecognition":false
+
         };
         
         let data = window.localStorage.getItem("USER_KEY")
@@ -55,6 +58,14 @@ class CameraWindow extends React.Component {
         }else if(name == "cameraType"){
             this.setState({
                 "form-cameraType":value
+            })
+        }else if(name == "faceRecognition"){
+            this.setState({
+                "form-faceRecognition":value
+            })
+        }else if(name == "maskRecognition"){
+            this.setState({
+                "form-maskRecognition":value
             })
         }
         else{
@@ -84,7 +95,9 @@ class CameraWindow extends React.Component {
                         body:JSON.stringify({
                                 "cameraName":this.state["form-name"],
 	                            "ip":this.state["form-ip"],
-                                "cameraType":this.state["form-cameraType"]
+                                "cameraType":this.state["form-cameraType"],
+                                "enableFace":this.state["form-maskRecognition"],
+                                "enableMask":this.state["form-faceRecognition"]
                             
                         })
                     })

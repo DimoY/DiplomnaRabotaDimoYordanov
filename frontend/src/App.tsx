@@ -13,13 +13,10 @@ import UserAuthWidget from './components/UserLogin_Register/MainForm';
 function App() {
   const [count, setCount] = useState(0);
   const [ip,setIP] = useState("");
-  let mapper  = new Map([
-    ["10-16-2012",[{message:"obame",importanceLevel:Importance.Informative}]]
-  ]);
 
   let registerWidget = (<UserAuthWidget/>)
   let liveWidget = (<CameraWindow/>)
-  let notificationWidget = (<NotificationGroup data = {mapper}/>)
+  let notificationWidget = (<NotificationGroup/>)
   let cameraWidget=  (<CameraList/>)
   let faceWidget = (<FaceWindow/>)
   return (
