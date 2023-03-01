@@ -10,17 +10,21 @@ class CameraAddForm extends React.Component {
         this.state = {
             setInfo: props.setInfo,
             justify:"outside",
-            faceRecognition:false,
-            maskRecognition:false
+            faceRecognition:true,
+            maskRecognition:true
         }
     }
     handleRadio(event:any){
         this.setState({"justify":event.target.value})
         this.state.setInfo({"type":"cameraType","value":event.target.value})
     }
-    handleCheckbox(type){
-        this.setState({"faceRecognition":!this.state[type]})
-        this.state.setInfo({"type":type,"value":this.state[type]})
+    handleCheckboxFace(){
+        this.setState({"faceRecognition":!this.state["faceRecognition"]})
+        this.state.setInfo({"type":"faceRecognition","value":this.state["faceRecognition"]})
+    }
+    handleCheckboxMask(){
+        this.setState({"maskRecognition":!this.state["maskRecognition"]})
+        this.state.setInfo({"type":"maskRecognition","value":this.state["maskRecognition"]})
     }
     render() {
         return (
@@ -108,13 +112,13 @@ class CameraAddForm extends React.Component {
                     color="primary"
                     label="Face recognition"
                     variant="soft"
-                    onChange={(e) => {handleCheckbox("faceRecognition") }}
+                    onChange={(e) => {this.handleCheckboxFace() }}
                 />
                 <Checkbox
                     color="primary"
                     label="Mask Recognition"
                     variant="soft"
-                    onChange={(e) => { handleCheckbox("maskRecognition")}}
+                    onChange={(e) => { this.handleCheckboxMask()}}
                 />
             </div>
         );

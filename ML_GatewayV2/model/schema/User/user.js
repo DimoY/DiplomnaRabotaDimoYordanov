@@ -7,5 +7,7 @@ module.exports = {
 	password: {type:String, required:true},
 	cameras:[camera],
 	faces:[face],
-	notifications:[notification]
+	notifications:[notification],
+	sensitivity:Number,
+	
 };

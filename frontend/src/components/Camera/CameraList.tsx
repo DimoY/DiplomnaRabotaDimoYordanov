@@ -79,12 +79,6 @@ class CameraWindow extends React.Component {
     }
     addNewCamera(e:any){
         async function addCameras(token: String) {
-            console.log(JSON.stringify({
-                "cameraName":this.state["form-name"],
-                "ip":this.state["form-ip"],
-                "cameraType":this.state["form-cameraType"]
-            
-        }))
             const req = await fetch("http://localhost:3333/api/camera/add/",
                     {
                         method:"post",

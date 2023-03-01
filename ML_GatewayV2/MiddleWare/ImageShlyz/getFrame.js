@@ -181,7 +181,7 @@ async function onFaceFound(element, imageSharpObject, user, imageWasSaved, key, 
     image = extractImage(element, imageSharpObject);
     encoding = await GetEncoding(image);
     let response = await calculateFaceInfo(image.png().toBuffer(), user, encoding);
-    if(camera.maskCheck==true && response["diff"]<1000000){
+    if(camera[0].maskCheck==true && response["diff"]<1000000){
         let res = await GetMaskInfo(image)
         console.log(res)
         if(res[2]>0.9){
@@ -192,11 +192,11 @@ async function onFaceFound(element, imageSharpObject, user, imageWasSaved, key, 
                 imageWasSaved=true;
                 SaveToS3(key, s3Store);
             }
-            notificationMaskNotFound(user,response,camera._id,key)
+            notificationMaskNotFound(user,response,camera[0]._id,key)
         }
     }
-    if (camera.faceRecognition==true && response["found"] == true) {
-        await notificationFaceFound(user, response, camera._id, key);
+    if (camera[0].faceRecognition==true && response["found"] == true) {
+        await notificationFaceFound(user, response, camera[0]._id, key);
     }
 }
 

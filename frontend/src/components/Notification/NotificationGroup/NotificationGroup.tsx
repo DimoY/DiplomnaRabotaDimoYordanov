@@ -9,6 +9,8 @@ import NotificationLine from "../NotificationLine/NotificationLine";
 import React from "react";
 import Importance from '../../../definitions/Enums/Importance/Importance';
 
+
+
 class NotificationGroup extends React.Component{
     constructor(props:Prop_NotificationGroup){
         super(props);
@@ -48,16 +50,6 @@ class NotificationGroup extends React.Component{
                                 </ListItemButton>
                             </ListItem>
                         )
-                    
-                    // this.state.date.push(new Date(KeyValuePair[0]))
-                    // let value = (
-                    //         <ListItem nested>
-                    //             <ListSubheader>{KeyValuePair[0]}</ListSubheader>
-                    //             <List>
-                    //                 {item}
-                    //             </List>
-                    //         </ListItem>
-                    //     );
                         }
                 this.setState({
                     list:item
@@ -73,13 +65,10 @@ class NotificationGroup extends React.Component{
             <Box>
                 <Switch
                     size="sm"
-                    // checked={small}
-                    // onChange={(event) => setSmall(event.target.checked)}=
                     sx={{ mb: 2 }}
                 />
                 <List
                     variant="outlined"
-                    // size={small ? 'sm' : undefined}
                     sx={{
                         width: 200,
                         bgcolor: 'background.body',

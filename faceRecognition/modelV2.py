@@ -174,7 +174,7 @@ distance_layer_output = DistanceLayer()(
     Encoder(negative_input),
 )
  
-siamese_model = tf.keras.Model(
+siamese_network = tf.keras.Model(
     inputs=[anchor_input, positive_input, negative_input], outputs=distance_layer_output
 )
  
