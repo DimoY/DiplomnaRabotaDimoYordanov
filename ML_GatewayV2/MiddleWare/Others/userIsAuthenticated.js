@@ -3,6 +3,10 @@ const jwt = require("jsonwebtoken")
 const userModel = require('../../model/model/User/user');
 
 async function UserIsAuthenticated(req,res,next) {
+    // проверка дали даден потребител съществува чрез jwt ключа
+    // това е middleware, който лесно ни позволява да проверим
+    // състоянието на даден потребител
+
     const token = req.headers["x-access-token"]
     if(token == undefined){
         res.json({"status":"error","reason":"There is no token, weird ..."})

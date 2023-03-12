@@ -7,6 +7,9 @@ const { default: axios } = require("axios");
 const S3 = new AWS.S3()
 
 async function GetCrash(sharp_image) {
+    // снимката се клонира и се променя размера и
+    // след това снимката се изпраща като пост рекуест
+
     let data = await sharp_image.clone().resize(128,128).raw().toBuffer()
     data = { "signature_name": "serving_default", "instances": [data.toJSON()["data"]] }
     headers = { 'Content-Type': 'application/json;charset=utf-8' }
@@ -21,7 +24,9 @@ async function GetCrash(sharp_image) {
 }
 
 async function GetFaces(sharp_image,metadata) {
-    
+    // снимката се слонира, размера и се намалява четворно и се праща на 
+    // програмния интерфейс за намиране на лица
+
     let image = await sharp_image.clone().resize(Math.round(metadata.width/4),Math.round(metadata.height/4)).raw().toBuffer()
 
     let data = await axios({
@@ -90,6 +95,8 @@ function getIndexMostSimilarFace(faces) {
 }
 
 async function calculateFaceInfo(imageS3,user,data){
+    // функция за калкулиране дистанцията на лицето
+
     let faces = faceListMinDifference(user, data)
     let { min, i } = getIndexMostSimilarFace(faces);
     let key,found,name
@@ -133,6 +140,10 @@ async function SendCrashNotification(user,camera_id,key,camera_id) {
 }
 
 async function onCarCrash(imageSharpObject, camera_id, user) {
+    // вика се функцията, която има достъп до контейнера на tensorflwo
+    // след това ако има катастрофа
+    // снимката се запазва в S3 и се изпраща нотификация
+
     let data = await GetCrash(imageSharpObject);
 
     if (CheckIfCarCrashed(data)) {
@@ -147,6 +158,7 @@ async function onCarCrash(imageSharpObject, camera_id, user) {
 }
 
 function extractImage(element, imageSharpObject) {
+    // взимане на patch от снимката и променяне на размера му
     element["MinY"] *= 4;
     element["MinX"] *= 4;
     element["Width"] *= 4;
@@ -178,6 +190,9 @@ async function notificationMaskNotFound(user,response, camera_id, key) {
 }
 
 async function onFaceFound(element, imageSharpObject, user, imageWasSaved, key, camera) {
+    // Взимане на лицата и правенето им на вектор, изчисляване на дистанция
+    // Ако даден човек е разпознат снимката се запазва в S3 и се пуска нотификация
+
     image = extractImage(element, imageSharpObject);
     encoding = await GetEncoding(image);
     let response = await calculateFaceInfo(image.png().toBuffer(), user, encoding);
@@ -204,6 +219,7 @@ async function ImageShlyz(camera_id,imageSharpObject) {
 
     let imageWasSaved = false
     let key = ""
+    // тук намираме според дадена камера, потребителя който я притежава
     let user = await userModel.findOne({
         "cameras._id": camera_id
     })

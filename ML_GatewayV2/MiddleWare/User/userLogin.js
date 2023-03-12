@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require('bcryptjs');
 
 router.post('/', async function (req, res, next) {
-    console.log(req.body)
+    //даден потребител влиза в профила си
     
     const user = await userModel.findOne({
         username:req.body.username

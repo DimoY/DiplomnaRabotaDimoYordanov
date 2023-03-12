@@ -6,6 +6,7 @@ const userModel = require('../../model/model/User/user');
 const AuthMiddleWare = require("../Others/userIsAuthenticated")
 
 router.get("/",AuthMiddleWare,async function (req,res,next) {
+    // код за взимане на всички камери за даден потребител
     let user = await userModel.findOne({
         username:req.username
     })

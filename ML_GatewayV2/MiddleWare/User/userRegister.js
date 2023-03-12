@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs")
 
 var salt = bcrypt.genSaltSync(10);
 router.post('/', async function (req, res, next) {
-    console.log(req.body)
+    // създаване на потребител като паролата се хешира
     try {
         sent = req.body.password
         var hash = bcrypt.hashSync(sent, 8);

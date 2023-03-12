@@ -33,7 +33,9 @@ let setWebSocket = (app)=>{
 
     app.ws('/camera-input/:cameraid/', function(ws, req) {
         ws.on('message', async function(msg) {
-
+            // реформатиране на изображението
+            // така че да е подходящо за създаване на sharp обект	
+               
             if (msg.slice(0, 5).toString() != "array") {
                 ws.send("Only array type supported");
               }
@@ -55,6 +57,7 @@ let setWebSocket = (app)=>{
                     channels: chanes,
                   }
                 })
+                // подаване като параметър на шлюз функцията нашето изображение
                 ImageShlyz(req.params["cameraid"],image)
               }
         });
