@@ -7,7 +7,6 @@ class Notification{
     }
 
     async _viewGet(req,res,next){
-        console.log(req.username)
         let user = await userModel.findOne({
             username:req.username
         })

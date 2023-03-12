@@ -19,10 +19,8 @@ class FaceWindow extends React.Component {
             mode:"cors"
         })
         const faces = await req.json()
-        console.log(faces)
         let list = []
         for(const face of faces["faces"]){
-            console.log(face)
             const image_url = "https://diplomna-rabota.s3.eu-central-1.amazonaws.com/"+face["face"][0].pictureAt
             list.push((
                 <FaceWidget key = {face._id} faceName = {face.personName} faceUrl = {image_url} num={face["face"].length}/>
@@ -54,7 +52,6 @@ class FaceWindow extends React.Component {
     handleFile(e){
         var reader = new FileReader();
         reader.onload = (evt) => {
-            console.log(evt);
             if(evt.target == undefined){
                 return
             }
@@ -75,7 +72,6 @@ class FaceWindow extends React.Component {
                 "personName":this.state["name"]
             
         })
-        console.log(body)
             const req = await fetch("http://localhost:3333/api/face/add/browser/",
                     {
                         method:"post",
@@ -87,7 +83,6 @@ class FaceWindow extends React.Component {
                         body:body
                     })
             const face = await req.json()
-            console.log(face)
             this.getFaces(token)
         }
         let data = window.localStorage.getItem("USER_KEY")

@@ -15,7 +15,6 @@ class CameraWindow extends React.Component {
                 }
             })
         const cameras = await req.json()
-        console.log(cameras)
         let list = []
         for (const camera of cameras["cameras"]) {
             list.push((
@@ -97,7 +96,6 @@ class CameraWindow extends React.Component {
                         })
                     })
             const cameras = await req.json()
-            console.log(cameras)
             this.getCameras(token)
         }
         let data = window.localStorage.getItem("USER_KEY")

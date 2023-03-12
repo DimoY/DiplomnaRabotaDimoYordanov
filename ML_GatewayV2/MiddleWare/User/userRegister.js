@@ -20,8 +20,6 @@ router.post('/', async function (req, res, next) {
         })
         res.json({status:"ok"})
     } catch (error) {
-        //TODO CHECK ERROR
-        console.log(error)
         res.json({status:"Error"})
     }
 });

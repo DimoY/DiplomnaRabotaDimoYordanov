@@ -15,7 +15,6 @@ class CameraWindow extends React.Component {
             "date": props.dateLastStreamd,
             "id":props.id
         };
-        console.log(this.state["name"])
     }
     render() {
         return (

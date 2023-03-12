@@ -35,7 +35,6 @@ class RegisterForm extends React.Component{
             if (!e.ok){
                 console.log("Fetching error")
             }
-            console.log(await e.json())
         })
     }
     setUsername(val:String){

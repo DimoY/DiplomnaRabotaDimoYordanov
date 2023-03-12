@@ -42,7 +42,6 @@ router.post('/browser/', AuthMiddleWare, async function (req, res, next) {
     let user = await userModel.findOne({
         username:req.username
     })
-    console.log(req.username,req.password)
     let imageBuffer =  sharp(image)
     constkey_value  = await SaveS3ForUser(imageBuffer, user);
     const data = PredictBasedOnPath(imageBuffer.resize(112,112))

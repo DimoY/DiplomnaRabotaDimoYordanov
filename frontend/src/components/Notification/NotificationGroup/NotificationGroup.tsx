@@ -33,11 +33,9 @@ class NotificationGroup extends React.Component{
                     return
                 }
                 let notifications= await res.json()
-                console.log(notifications)
                 let item = [];
                 for(const notificatiom in notifications["notifications"]){
                         let notification = notifications["notifications"][notificatiom]
-                        console.log(notification)
                         item.push(
                             <ListItem key = {notificatiom}>
                                 <ListItemButton>
