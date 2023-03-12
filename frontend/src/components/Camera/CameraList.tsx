@@ -7,7 +7,7 @@ import CameraWidget from "./CameraWidget"
 
 class CameraWindow extends React.Component {
     async getCameras(token: String) {
-
+        //код за взимане на всички камери
         const req = await fetch("http://localhost:3333/api/camera/get/",
             {
                 headers: {
@@ -78,6 +78,7 @@ class CameraWindow extends React.Component {
         }
     }
     addNewCamera(e:any){
+        // код за добавяне на камера за даден потребител
         async function addCameras(token: String) {
             const req = await fetch("http://localhost:3333/api/camera/add/",
                     {

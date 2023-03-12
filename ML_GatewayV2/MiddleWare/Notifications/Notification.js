@@ -10,6 +10,9 @@ class Notification{
     }
 
     async _viewAdd(req,res,next){
+        // функция използвана от рутера за добавяне на нотификация
+        // чрез програмния интерфейс
+
         const username = req.body["username"]
         let user = await userModel.findOne({
             username : username

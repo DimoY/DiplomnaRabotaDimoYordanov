@@ -55,7 +55,7 @@ router.post('/browser/', AuthMiddleWare, async function (req, res, next) {
             id = personIndex+1
             id2 = user.faces[personIndex].face.length
             flag = true
-            user.faces[personIndex].face.push({face:(await data)[0],createdAt:new Date(),pictureAt:key_value})   
+            await AddFaceIfUserExists(user, personIndex, data);   
         }
     }
     if(flag == false){
@@ -65,22 +65,35 @@ router.post('/browser/', AuthMiddleWare, async function (req, res, next) {
             id = 0
         }
         
-        user.faces.push({
-            face:[{face:(await data)[0],createdAt:new Date(),pictureAt:key_value}],
-            personName:req.body["personName"],
-            hashedAt: new Date()
-        })
+        await AddFaceToDatabase(user, data, req);
     }
     
-    user = await userModel.updateOne({
-        username:user.username
-    },user)
+    user = await UpdateDatabase(user);
     
     res.json({ "data": true,"status":"ok" });
 });
 
 
 module.exports = router;
+
+async function AddFaceIfUserExists(user, personIndex, data) {
+    user.faces[personIndex].face.push({ face: (await data)[0], createdAt: new Date(), pictureAt: key_value });
+}
+
+async function UpdateDatabase(user) {
+    user = await userModel.updateOne({
+        username: user.username
+    }, user);
+    return user;
+}
+
+async function AddFaceToDatabase(user, data, req) {
+    user.faces.push({
+        face: [{ face: (await data)[0], createdAt: new Date(), pictureAt: key_value }],
+        personName: req.body["personName"],
+        hashedAt: new Date()
+    });
+}
 
 async function SaveS3ForUser(imageBuffer, user) {
     const imageS3Promise = imageBuffer.png().toBuffer();

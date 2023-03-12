@@ -9,8 +9,6 @@ import NotificationLine from "../NotificationLine/NotificationLine";
 import React from "react";
 import Importance from '../../../definitions/Enums/Importance/Importance';
 
-
-
 class NotificationGroup extends React.Component{
     constructor(props:Prop_NotificationGroup){
         super(props);
@@ -23,6 +21,7 @@ class NotificationGroup extends React.Component{
             this.state.list = [(<h1>You are not logged in</h1>)]
         }else{
             async function getNotifications() {
+                //показване на всички нотификации
                 let res = await fetch("http://localhost:3333/api/notifications/",
                 {
                     method:"get",

@@ -10,7 +10,7 @@ import FaceSensitivitySidebar from "./SensitivitySidebar"
 
 class FaceWindow extends React.Component {
     async getFaces(token:String){
-            
+        // код за вземане на лица на даден потребител
         const req = await fetch("http://localhost:3333/api/face/get/",
         {
             headers:{
@@ -69,6 +69,7 @@ class FaceWindow extends React.Component {
     }
     handleAddFace(e){
         async function addFace(token: String) {
+            // добавяне на лице чрез програмния интерфейс
             const body = JSON.stringify({
                 "faceArray":this.state["file"],
                 "personName":this.state["name"]

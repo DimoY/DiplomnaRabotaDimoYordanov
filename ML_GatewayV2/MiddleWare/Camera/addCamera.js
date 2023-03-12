@@ -23,7 +23,8 @@ function IsIpCorrect(ip) {
 
 
 router.post('/', AuthMiddleWare, async function (req, res, next) {
-   if(req.body["cameraName"] == undefined){
+    // добавяне на камера в базата данни
+    if(req.body["cameraName"] == undefined){
         res.json({ "reason": "No camera name provided","status":"error" });
         return
     }

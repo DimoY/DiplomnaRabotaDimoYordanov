@@ -2,7 +2,7 @@ var express = require('express');
 const Notification = require('./Notification');
 const NotificationsGet = require("./NotificationsGet")
 var router = express.Router();
-
+//създаване на клас за нотификация на базата на приоритет и текст
 let faceRecognised = new Notification("High",{
     "title":"<person> was spoted on camera <camera>"
 })

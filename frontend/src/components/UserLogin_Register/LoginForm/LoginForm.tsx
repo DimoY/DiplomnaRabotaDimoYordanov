@@ -17,6 +17,7 @@ class LoginForm extends React.Component{
         this.setPassword = this.setPassword.bind(this) 
     }
     handleSubmit(e:FormEvent<HTMLFormElement>){
+        //компонент за управление на формата при натискане за логване
         e.preventDefault()
         const body = JSON.stringify({
             "username":this.state["username"],

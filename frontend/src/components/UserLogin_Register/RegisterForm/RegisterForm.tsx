@@ -18,6 +18,7 @@ class RegisterForm extends React.Component{
         this.setPassword = this.setPassword.bind(this) 
     }
     handleSubmit(e:FormEvent<HTMLFormElement>){
+        // компонент за управление на формата при натискане за регистриране
         const body = JSON.stringify({
             "username":this.state["username"],
             "password":sha256(this.state["password"])

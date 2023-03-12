@@ -7,6 +7,7 @@ import FaceWindow from './components/Faces/FaceList';
 import UserAuthWidget from './components/UserLogin_Register/MainForm';
 
 function App() {
+  // код за главния widget
   const [count, setCount] = useState(0);
   const [ip,setIP] = useState("");
 
