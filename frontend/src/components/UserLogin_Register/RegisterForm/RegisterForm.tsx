@@ -4,6 +4,7 @@ import UsernameField from "../Fields/UsernameField";
 import SubmitButton from "../Fields/SubmitButton";
 import {Typography} from "@mui/joy";
 import EmailField from "../Fields/EmailField";
+var sha256 = require('js-sha256');
 
 class RegisterForm extends React.Component{
     constructor(props:{}) {
@@ -17,10 +18,9 @@ class RegisterForm extends React.Component{
         this.setPassword = this.setPassword.bind(this) 
     }
     handleSubmit(e:FormEvent<HTMLFormElement>){
-        e.preventDefault()
         const body = JSON.stringify({
             "username":this.state["username"],
-            "password":this.state["password"]
+            "password":sha256(this.state["password"])
         })
         let res = fetch("http://localhost:3333/api/user/register/",
             {

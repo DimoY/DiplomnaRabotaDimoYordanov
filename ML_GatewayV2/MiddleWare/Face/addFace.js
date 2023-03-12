@@ -44,15 +44,7 @@ router.post('/browser/', AuthMiddleWare, async function (req, res, next) {
     })
     console.log(req.username,req.password)
     let imageBuffer =  sharp(image)
-    const imageS3Promise = imageBuffer.png().toBuffer()
-    let imageS3 = await imageS3Promise
-    const key_value = user._id.toString()+"_"+Math.floor(Math.random()*1000000).toString()+"_Image.png"
-    const resultS3Image = await S3.putObject({
-        Body: imageS3,
-        Bucket: "diplomna-rabota",
-        Key:key_value
-    }).promise()
-    console.log(resultS3Image)
+    constkey_value  = await SaveS3ForUser(imageBuffer, user);
     const data = PredictBasedOnPath(imageBuffer.resize(112,112))
    
     flag = false
@@ -89,3 +81,15 @@ router.post('/browser/', AuthMiddleWare, async function (req, res, next) {
 
 
 module.exports = router;
+
+async function SaveS3ForUser(imageBuffer, user) {
+    const imageS3Promise = imageBuffer.png().toBuffer();
+    let imageS3 = await imageS3Promise;
+    const key_value = user._id.toString() + "_" + Math.floor(Math.random() * 1000000).toString() + "_Image.png";
+    const resultS3Image = await S3.putObject({
+        Body: imageS3,
+        Bucket: "diplomna-rabota",
+        Key: key_value
+    }).promise();
+    return key_value;
+}

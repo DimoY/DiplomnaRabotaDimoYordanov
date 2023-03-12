@@ -3,6 +3,7 @@ import PaswordField from "../Fields/PaswordField";
 import UsernameField from "../Fields/UsernameField";
 import SubmitButton from "../Fields/SubmitButton";
 import {Typography} from "@mui/joy";
+var sha256 = require('js-sha256');
 
 class LoginForm extends React.Component{
     constructor(props:{}) {
@@ -19,7 +20,7 @@ class LoginForm extends React.Component{
         e.preventDefault()
         const body = JSON.stringify({
             "username":this.state["username"],
-            "password":this.state["password"]
+            "password":sha256(this.state["password"])
         })
         let res = fetch("http://localhost:3333/api/user/login/",
             {

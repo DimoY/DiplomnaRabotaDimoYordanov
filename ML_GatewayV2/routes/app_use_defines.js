@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const mongoose = require("mongoose")
 
 const APIRouter = require('../MiddleWare/Router');
-const {  mongoose } = require("mongoose");
 
 function AppUseDefines(app) {
     mongoose.connect(process.env.ATLAS_URI)
