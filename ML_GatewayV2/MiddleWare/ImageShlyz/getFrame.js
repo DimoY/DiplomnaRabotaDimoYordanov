@@ -166,7 +166,6 @@ function extractImage(element, imageSharpObject) {
 
 
     let face_croped = imageSharpObject.extract({ left: element["MinX"], top: element["MinY"], width: element["Width"], height: element["Height"] });
-    face_croped.png().toFile("123.png");
     image = face_croped.resize(112, 112);
     return image
 }
@@ -198,7 +197,6 @@ async function onFaceFound(element, imageSharpObject, user, imageWasSaved, key, 
     let response = await calculateFaceInfo(image.png().toBuffer(), user, encoding);
     if(camera[0].maskCheck==true && response["diff"]<1000000){
         let res = await GetMaskInfo(image)
-        console.log(res)
         if(res[2]>0.9){
             if (imageWasSaved != true) {
                 let s3Store = imageSharpObject.jpeg().toBuffer();
